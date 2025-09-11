@@ -1,0 +1,40 @@
+{
+  "name": "tao-lending",
+  "version": "1.0.0",
+  "description": "TAO Lending Protocol",
+  "scripts": {
+    "build": "hardhat compile",
+    "cli": "ts-node scripts/cli.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.7",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.11",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^1.0.0",
+    "@openzeppelin/contracts": "5.0.1",
+    "@polkadot/keyring": "^13.4.4",
+    "@polkadot/types": "^15.9.2",
+    "@polkadot/util-crypto": "^13.4.4",
+    "@typechain/ethers-v6": "^0.4.0",
+    "@typechain/hardhat": "^8.0.0",
+    "@types/chai": "^4.3.19",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.5.4",
+    "@types/yargs":"^17.0.33",
+    "@types/dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
+    "yargs": "^17.7.2",
+    "yargs-parser": "^21.0.1",
+    "chai": "^4.2.0",
+    "ethers": "^6.13.2",
+    "hardhat": "^2.19.4",
+    "hardhat-gas-reporter": "^1.0.8",
+    "node-json-db": "^2.3.1",
+    "solidity-coverage": "^0.8.13",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.3.3"
+  }
+}

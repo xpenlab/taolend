@@ -4,15 +4,21 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import "./stakingV2.sol";
 import "./balanceTransfer.sol";
 
 contract LendingPoolV1 is Ownable, ReentrancyGuard{
+    using ECDSA for bytes32;
+    using MessageHashUtils for bytes32;
+
     bytes32 public CONTRACT_COLDKEY = bytes32(0);
     bytes32 public TREASURY_COLDKEY = bytes32(0);
     bytes32 public DEFAULT_DELEGATE_HOTKEY = bytes32(0);
     address public MANAGER = address(0);
     string public constant VERSION = "v1";
+    uint256 constant MAX_MINER_BOUND = 64;
 
     bool public paused = false;
     IStaking public immutable staking;
@@ -101,9 +107,26 @@ contract LendingPoolV1 is Ownable, ReentrancyGuard{
         paused = _paused;
     }
 
-    function bindMiner(bytes32 _hotkey) public  nonReentrant {
+    function verifySignature(
+        bytes32 _message,
+        bytes memory _signature,
+        address _signer
+    ) internal pure returns (bool) {
+        bytes32 ethSignedMessageHash = _message.toEthSignedMessageHash();
+        address recoveredSigner = ethSignedMessageHash.recover(_signature);
+        return recoveredSigner == _signer;
+    }
+
+    function bindMiner(bytes32 _hotkey, bytes memory _signature) public nonReentrant {
         require(!paused, "contract is paused");
+        require(minerCount[_hotkey] < MAX_MINER_BOUND, "hotkey reached max miner bound");
         require(!minerBound[msg.sender], "miner already bounded");
+
+        // Verify signature: check that _hotkey was signed by msg.sender
+        require(
+            verifySignature(_hotkey, _signature, msg.sender),
+            "invalid signature: hotkey must be signed by msg.sender"
+        );
 
         minerHotkey[msg.sender] = _hotkey;
         minerAddresses[_hotkey].push(msg.sender);
@@ -115,6 +138,7 @@ contract LendingPoolV1 is Ownable, ReentrancyGuard{
 
     function depositAlpha(uint256 _netuid, uint256 _amount, bytes32 _delegate_hotkey) public nonReentrant {
         require(!paused, "contract is paused");
+        require(minerBound[msg.sender], "miner not bounded");
 
         bytes memory data = abi.encodeWithSelector(
             IStaking.transferStake.selector,

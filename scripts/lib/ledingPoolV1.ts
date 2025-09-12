@@ -1,8 +1,35 @@
-export const LENDING_POOL_V1_ABI =   [
+export const LENDING_POOL_V1_ABI =    [
   {
     inputs: [],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "ECDSAInvalidSignature",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "length",
+        type: "uint256",
+      },
+    ],
+    name: "ECDSAInvalidSignatureLength",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "s",
+        type: "bytes32",
+      },
+    ],
+    name: "ECDSAInvalidSignatureS",
+    type: "error",
   },
   {
     inputs: [
@@ -421,6 +448,11 @@ export const LENDING_POOL_V1_ABI =   [
         internalType: "bytes32",
         name: "_hotkey",
         type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "_signature",
+        type: "bytes",
       },
     ],
     name: "bindMiner",

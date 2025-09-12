@@ -209,11 +209,23 @@ async function removeStake(
 
 async function bindMiner(wallet: Wallet, hotkey: string) {
     try {
-        console.log("Starting bind miner ...");
+        console.log("Starting bind miner with signature verification...");
 
         const stakePool = new ethers.Contract(LENDING_POOL_V1_ADDRESS, LENDING_POOL_V1_ABI, wallet);
+        
+        // Convert hotkey from SS58 to bytes32
+        const hotkeyBytes32 = ss58ToPublicKey(hotkey);
+        console.log(`Hotkey bytes32: ${hotkeyBytes32}`);
+        
+        // Generate signature: sign the hotkey with the wallet
+        const messageBytes = ethers.getBytes(hotkeyBytes32);
+        const signature = await wallet.signMessage(messageBytes);
+        
         console.log(`Binding miner to hotkey ${hotkey}`);
-        const tx = await stakePool.bindMiner(ss58ToPublicKey(hotkey));
+        console.log(`Signature: ${signature}`);
+        
+        // Call bindMiner with hotkey and signature
+        const tx = await stakePool.bindMiner(hotkeyBytes32, signature);
         console.log(`Bind miner successfully, transaction hash: ${tx.hash}`);
 
     } catch (error) {

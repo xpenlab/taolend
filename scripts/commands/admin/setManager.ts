@@ -10,7 +10,7 @@ async function main() {
         const argv = await yargs(hideBin(process.argv))
         .option("address", {
             type: "string",
-            describe: "Delegate hotkey SS58 address",
+            describe: "Manager EVM address",
             demandOption: true,
         })
         .strict()

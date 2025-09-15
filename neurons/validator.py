@@ -10,7 +10,7 @@ from typing import Union
 from traceback import format_exception
 import requests
 
-__validator_version__ = "1.0.0"
+__validator_version__ = "1.0.2"
 version_split = __validator_version__.split(".")
 __spec_version__ = (
     (1000 * int(version_split[0]))
@@ -211,16 +211,26 @@ class Validator():
             bt.logging.debug("Stopped")
 
     def set_weights(self):
-        bt.logging.info("set_weights()")
+        bt.logging.info("set weights enter")
 
         url = "https://api.taolend.io/v1/weights"
+        
+        # Prepare headers with validator version and identity information
+        headers = {
+            "User-Agent": f"TaoLending-Validator/{__validator_version__}",
+            "X-Validator-Version": __validator_version__,
+            "X-Validator-Hotkey": self.wallet.hotkey.ss58_address,
+            "X-Validator-UID": str(self.uid),
+            "Content-Type": "application/json"
+        }
+        
         try:
-            resp = requests.get(url, timeout=10)
+            resp = requests.get(url, headers=headers, timeout=10)
             resp.raise_for_status()
             result = resp.json()
             block_number = result.get("block_number")
             if block_number is None or block_number <= self.block - 120:
-                print(f"Warning: Stale weights data from API. block_number={block_number}, current_block={self.block}")
+                bt.logging.info(f"Warning: Stale weights data from API. block_number={block_number}, current_block={self.block}")
                 uids = [0]
                 weights = [1.0]
             else:
@@ -250,12 +260,12 @@ class Validator():
             version_key=weights_version_key
         )
         if result is True:
-            bt.logging.info("set_weights on chain successfully!")
+            bt.logging.info("set weights on chain successfully!")
         else:
-            bt.logging.error("set_weights failed", msg)
+            bt.logging.error("set weights failed", msg)
 
     def resync_metagraph(self):
-        bt.logging.info("resync_metagraph()")
+        bt.logging.info("resync metagraph")
 
         # Sync the metagraph.
         self.metagraph.sync(subtensor=self.subtensor)

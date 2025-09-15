@@ -64,7 +64,7 @@ pip install -r requirement.txt
    ```
 
    <span style="color:red">Update the ETH_PRIVATE_KEY value in .env with 32 bytes</span>. This generates an EVM wallet address and maps it to a Subtensor SS58 address.
-   **Important**: Keep this private key secure, or you will lose all assets in the wallet.
+   **Important**: Keep this private key secure, or you will lose all assets in the wallet. DON'T USE THE DEFAULT KEY !!!
    Note: The mirror SS58 address does not have a private key, so you cannot control it directly.
 
    ```bash

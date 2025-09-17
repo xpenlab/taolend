@@ -42,8 +42,8 @@ npm install -g typescript ts-node pm2
 
 Download code and install dependency
 ```bash
-git clone https://github.com/xpenlab/taopool
-cd taopool
+git clone https://github.com/xpenlab/taolend
+cd taolend
 npm install
 pip install -r requirement.txt
 ```
@@ -60,7 +60,7 @@ pip install -r requirement.txt
 2. **Create an EVM wallet**
 
    ```bash
-   cp env.example.ts .env
+   cp env.example .env
    ```
 
    <span style="color:red">Update the ETH_PRIVATE_KEY value in .env with 32 bytes</span>. This generates an EVM wallet address and maps it to a Subtensor SS58 address.

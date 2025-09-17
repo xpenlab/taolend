@@ -18,5 +18,4 @@ deployed-contract.json
 ignition/deployments/chain-31337
 
 # secrets and other local configs
-config.ts
 neuron/

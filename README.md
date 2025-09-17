@@ -68,7 +68,7 @@ pip install -r requirement.txt
    Note: The mirror SS58 address does not have a private key, so you cannot control it directly.
 
    ```bash
-   npx ts-node script/cli.ts miner balance
+   npx ts-node scripts/cli.ts miner balance
    ```
 
    This will display your EVM wallet address, mirror SS58 address, and balances at any time.
@@ -76,7 +76,7 @@ pip install -r requirement.txt
 3. **Bind miner to EVM wallet**
 
    ```bash
-   npx ts-node script/cli.ts miner bind --hotkey <your miner hotkey>
+   npx ts-node scripts/cli.ts miner bind --hotkey <your miner hotkey>
    ```
 
 4. **Transfer TAO or ALPHA to the EVM wallet**
@@ -90,23 +90,23 @@ pip install -r requirement.txt
 5. **Deposit TAO/ALPHA to the lending pool**
 
    ```bash
-   npx ts-node script/cli.ts deposit alpha --netuid <alpha netuid> --amount <readable amount> --delegate <the alpha delegated hotkey>
-   npx ts-node script/cli.ts deposit tao --amount <readable amount>
+   npx ts-node scripts/cli.ts deposit alpha --netuid <alpha netuid> --amount <readable amount> --delegate <the alpha delegated hotkey>
+   npx ts-node scripts/cli.ts deposit tao --amount <readable amount>
    ```
 
 6. **Withdraw TAO/ALPHA from the lending pool**
 
    ```bash
-   npx ts-node script/cli.ts withdraw alpha --netuid <alpha netuid> --amount <readable amount>
-   npx ts-node script/cli.ts withdraw tao --amount <readable amount>
+   npx ts-node scripts/cli.ts withdraw alpha --netuid <alpha netuid> --amount <readable amount>
+   npx ts-node scripts/cli.ts withdraw tao --amount <readable amount>
    ```
 
 7. **Transfer TAO/ALPHA out of the EVM wallet**
    Since you cannot control the mirror SS58 address, assets should be transferred out of the EVM address using the EVM precompile contract.
 
    ```bash
-   npx ts-node script/cli.ts transfer alpha --netuid <alpha netuid> --amount <readable amount> --dest <destination SS58 coldkey address>
-   npx ts-node script/cli.ts transfer tao --amount <readable amount> --dest <destination SS58 coldkey address>
+   npx ts-node scripts/cli.ts transfer alpha --netuid <alpha netuid> --amount <readable amount> --dest <destination SS58 coldkey address>
+   npx ts-node scripts/cli.ts transfer tao --amount <readable amount> --dest <destination SS58 coldkey address>
    ```
 
 **GUI mode** is available at [taolend.io](https://taolend.io).

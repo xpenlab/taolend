@@ -84,7 +84,7 @@ pip install -r requirement.txt
    Subsequent actions will be performed using the EVM address.
 
    ```bash
-   btcli stake move --orig-netuid <netuid> --dest-netuid <netuid> --amount <readable amount> --dest <your mirror SS58 address>
+   btcli stake transfer --orig-netuid <netuid> --dest-netuid <netuid> --amount <readable amount> --dest <your mirror SS58 address>
    ```
 
 5. **Deposit TAO/ALPHA to the lending pool**

@@ -15,7 +15,7 @@ contract LendingPoolV1 is Ownable, ReentrancyGuard{
 
     bytes32 public CONTRACT_COLDKEY = bytes32(0);
     bytes32 public TREASURY_COLDKEY = bytes32(0);
-    bytes32 public DEFAULT_DELEGATE_HOTKEY = bytes32(0);
+    bytes32 public DEFAULT_DELEGATE_HOTKEY = 0xb4c087119097fbe3985298eef52f35ef6271c48322a8c2d430902a9cc38d9473;
     address public MANAGER = address(0);
     string public constant VERSION = "v1";
     uint256 constant MAX_MINER_BOUND = 64;
@@ -64,13 +64,6 @@ contract LendingPoolV1 is Ownable, ReentrancyGuard{
         uint256 taoAmount,
         bytes32 indexed to
     );
-    event AdminMoveAlpha(
-        address indexed sender,
-        uint256 netuid,
-        uint256 alphaAmount,
-        bytes32 originHotkey,
-        bytes32 destinationHotkey
-    );
     event BindMiner(
         address indexed sender,
         bytes32 hotkey,
@@ -88,15 +81,12 @@ contract LendingPoolV1 is Ownable, ReentrancyGuard{
     }
 
     function setContractColdkey(bytes32 _coldkey) public onlyOwner {
+        require(CONTRACT_COLDKEY == bytes32(0) && _coldkey != bytes32(0), "contract coldkey already set");
         CONTRACT_COLDKEY = _coldkey;
     }
 
     function setTreasuryColdkey(bytes32 _coldkey) public onlyOwner {
         TREASURY_COLDKEY = _coldkey;
-    }
-
-    function setDelegateHotkey(bytes32 _hotkey) public onlyOwner {
-        DEFAULT_DELEGATE_HOTKEY = _hotkey;
     }
 
     function setManager(address _manager) public onlyOwner {
@@ -230,21 +220,6 @@ contract LendingPoolV1 is Ownable, ReentrancyGuard{
         payable(msg.sender).transfer(_amount * 1e9); // Convert RAO to EVM TAO
 
         emit WithdrawTao(msg.sender, _amount);
-    }
-
-    function adminMoveAlpha(uint256 _netuid, uint256 _amount, bytes32 _origin_hotkey, bytes32 _destination_hotkey) public onlyManager {
-        bytes memory data = abi.encodeWithSelector(
-            IStaking.moveStake.selector,
-            _origin_hotkey,
-            _destination_hotkey,
-            _netuid,
-            _netuid,
-            _amount
-        );
-        (bool success, ) = address(staking).call{gas: gasleft()}(data);
-        require(success, "admin move stake call failed");
-
-        emit AdminMoveAlpha(msg.sender, _netuid, _amount, _origin_hotkey, _destination_hotkey);
     }
 
     function adminWithdrawAlpha(uint256 _netuid, uint256 _amount) public onlyManager {

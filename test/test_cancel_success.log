@@ -1,0 +1,208 @@
+
+================================================================================
+[1mTest Case TC10: Cancel Offer Success (Baseline)[0m
+================================================================================
+[0;96mObjective:[0m Verify cancel(Offer) succeeds with valid offer
+[0;96mStrategy:[0m Create valid offer, cancel successfully, verify state changes
+[0;96mExpected:[0m Transaction succeeds, CancelOffer event emitted
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Searching for active offers from LENDER1...
+[0;32m[SUCCESS][0m Found active offer: 0072995a49f60d43cf651dedbb28817a6c2def2c5093ca5c2cd433520801f85c.json
+[0;36m[INFO][0m   Offer ID: 0x0072995a...
+[0;36m[INFO][0m   Max TAO: 100.0 TAO
+[0;36m[INFO][0m   Alpha Price: 0.025 TAO
+[0;36m[INFO][0m   Daily Rate: 1000.0%
+[0;36m[INFO][0m   Netuid: 3
+[0;36m[INFO][0m   Expire: 1767098482 (current: 1767012108)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ LENDER1 registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;32m[SUCCESS][0m ✓ Offer is NOT expired:
+[0;36m[INFO][0m   Current timestamp: 1767012108
+[0;36m[INFO][0m   Expire timestamp: 1767098482
+[0;32m[SUCCESS][0m ✓ Offer is NOT cancelled
+[0;32m[SUCCESS][0m ✓ Offer nonce matches: 1
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 174048
+[1mTimestamp:[0m 1767012108
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x878bCa7888dAa14f3e58A1e2Cab9a43aBE17aCac):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                0
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     840.950709420 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m canceledOffers[0x0072995a...] = 0
+[0;36m[INFO][0m lenderNonce[0x951C84C6791F3a3959462A4DF624DfB5F70bE6De] = 1
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A for cancel operations
+
+================================================================================
+[1mStep 4: Execute cancel(Offer)[0m
+================================================================================
+
+[1m[0;32mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds (status=1)
+  [0;36mEvent:[0m CancelOffer(lender, offerId, netuid)
+  [0;96mState Changes:[0m
+    - canceledOffers[offerId] = current_block_number
+    - lenderNonce unchanged
+    - Lender EVM TAO decreased by gas
+    - All other balances unchanged
+
+[0;36m[INFO][0m Cancelling offer 0x0072995a...
+[0;36m[INFO][0m Transaction sent: 03ada4becf069e8bb4c71a01859ec083b02ffbbf8bce64036b0533a8e64a9742
+[0;36m[INFO][0m Transaction mined in block 174049
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 174049
+[1mTimestamp:[0m 1767012120
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x878bCa7888dAa14f3e58A1e2Cab9a43aBE17aCac):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                0
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     840.950079590 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A for cancel operations
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Transaction succeeded (status=1)
+[0;32m[SUCCESS][0m ✓ CancelOffer event emitted:
+[0;36m[INFO][0m   lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;36m[INFO][0m   offerId: 0072995a49f60d43cf651dedbb28817a6c2def2c5093ca5c2cd433520801f85c
+[0;36m[INFO][0m   netuid: 3
+[0;32m[SUCCESS][0m ✓ Event fields verified
+[0;36m[INFO][0m 
+State changes:
+[0;36m[INFO][0m   canceledOffers[0x0072995a...]: 0 → 174049
+[0;36m[INFO][0m   lenderNonce[0x951C84C6...]: 1 → 1
+[0;32m[SUCCESS][0m ✓ canceledOffers set to block 174049
+[0;32m[SUCCESS][0m ✓ lenderNonce unchanged (1)
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.000629830 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Expected changes:
+[0;36m[INFO][0m   Lender EVM TAO: -0.000629830 TAO (gas)
+[0;36m[INFO][0m   All other balances: No change
+[0;32m[SUCCESS][0m ✓ Lender EVM TAO decreased by gas: -0.000629830 TAO
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m Cancel operation completed successfully
+[0;32m[SUCCESS][0m Offer 0x0072995a... cancelled at block 174049
+[0;32m[SUCCESS][0m All state changes verified
+[0;32m[SUCCESS][0m All balance changes verified

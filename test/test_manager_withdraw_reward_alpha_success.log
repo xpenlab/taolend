@@ -1,0 +1,31 @@
+
+================================================================================
+[1mTest Case TC01-04: withdrawRewardAlpha - Success[0m
+================================================================================
+[0;96mObjective:[0m Verify successful reward withdrawal when rewards are available
+[0;96mStrategy:[0m MANAGER withdraws available rewards to TREASURY_COLDKEY
+[0;96mExpected:[0m Transaction succeeds, rewards transferred
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Manager: 0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267
+[0;36m[INFO][0m Test netuid: 3 (active)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Caller is the MANAGER
+[0;32m[SUCCESS][0m ✓ Subnet 3 is active
+[0;36m[INFO][0m Contract coldkey: 0x1ac8dded2208a55b60806e2a9e2ccde3e06009c171fabbd2e717c913773b816e
+[0;36m[INFO][0m Treasury coldkey: 0x8eb2a9b02631bd214ef8566fe2ebc7c85e6786956692fd0aa6f589d84cee8d89
+[0;36m[INFO][0m Querying staking information for netuid 3...
+[0;36m[INFO][0m Total stake (on-chain): 1489.999999988 ALPHA
+[0;36m[INFO][0m Subnet alpha balance (accounting): 1490.0 ALPHA
+[0;36m[INFO][0m Withdrawable reward: 0.0 ALPHA
+[1;33m[WARNING][0m ⚠ No rewards available for withdrawal
+[1;33m[WARNING][0m This test requires staking rewards to be accumulated
+[1;33m[WARNING][0m Test will skip as there are no rewards to withdraw
+[0;36m[INFO][0m 
+To accumulate rewards:
+[0;36m[INFO][0m   1. Wait for staking rewards to accumulate on the subnet
+[0;36m[INFO][0m   2. Or use a subnet that already has accumulated rewards

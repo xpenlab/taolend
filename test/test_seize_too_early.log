@@ -1,0 +1,214 @@
+
+================================================================================
+[1mTest Case TC09: Too Early (Seize)[0m
+================================================================================
+[0;96mObjective:[0m Verify seize fails before MIN_LOAN_DURATION grace period expires
+[0;96mStrategy:[0m Lender attempts to seize immediately after collect
+[0;96mExpected:[0m Transaction reverts with 'too early'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m MIN_LOAN_DURATION from contract: 15 blocks
+[0;36m[INFO][0m Finding a loan in IN_COLLECTION state where grace period has NOT passed...
+[0;32m[SUCCESS][0m Found loan in IN_COLLECTION state: ID=14
+[0;36m[INFO][0m   Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[0;36m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   State: IN_COLLECTION (1)
+[0;36m[INFO][0m   Collateral: 50.00 ALPHA
+[0;36m[INFO][0m   Loan: 10.00 TAO
+[0;36m[INFO][0m   Last update block: 195624
+[0;36m[INFO][0m   Current block: 195625
+[0;36m[INFO][0m   Seize allowed at block: 195639
+[1;33m[WARNING][0m   ⚠️  Grace period remaining: 14 blocks (TOO EARLY)
+[0;32m[SUCCESS][0m Found lender private key: LENDER2
+
+================================================================================
+[1mSTEP 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 195625
+[1mTimestamp:[0m 1767271032
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              50.576467966 TAO
+    netuid=3 (ALPHA):          1400.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              50.576467466 TAO
+    netuid=3 (ALPHA):          1399.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER (LENDER2) (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     799.965245942 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             3.975488565 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mBORROWER (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.660864597 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):          70.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 14
+[0;36m[INFO][0m State: 1 (IN_COLLECTION)
+[0;36m[INFO][0m Last Update Block: 195624
+[0;36m[INFO][0m Current Block: 195625
+[0;36m[INFO][0m Seize Allowed At Block: 195639
+[1;33m[WARNING][0m ⚠️  Grace period remaining: 14 blocks - TOO EARLY to seize
+[0;36m[INFO][0m Loan Amount: 10.00 TAO
+[0;36m[INFO][0m Collateral: 50.00 ALPHA
+
+================================================================================
+[1mSTEP 4: Execute Test Operation - Seize (Expected to Fail)[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31m✗ Revert:[0m 'too early'
+  [0;96mReason:[0m Grace period (MIN_LOAN_DURATION) has not expired yet
+  [0;96mState Changes:[0m
+    - No state changes (transaction reverts)
+    - Only gas deducted from lender's EVM TAO
+[0;36m[INFO][0m 
+Attempting to seize loan 14...
+[1;33m[WARNING][0m ⚠️  Too early: 14 blocks remaining in grace period
+[0;32m[SUCCESS][0m ✓ Gas estimation failed (expected): 'too early'
+[0;36m[INFO][0m 
+Transaction sent: a9d219064bcdfcb8ba5a82f3d593c7701ed3b53965a1ec5954d7c06e98c99338
+[0;36m[INFO][0m Transaction mined in block 195626
+
+================================================================================
+[1mSTEP 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 195626
+[1mTimestamp:[0m 1767271044
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              50.576467966 TAO
+    netuid=3 (ALPHA):          1400.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              50.576467466 TAO
+    netuid=3 (ALPHA):          1399.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER (LENDER2) (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     799.964567082 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             3.975488565 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mBORROWER (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.660864597 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):          70.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 14
+[0;36m[INFO][0m State: 1 (still IN_COLLECTION)
+[0;36m[INFO][0m Loan Amount: 10.00 TAO
+
+================================================================================
+[1mSTEP 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Transaction status: 0
+[0;32m[SUCCESS][0m ✓ Transaction REVERTED as expected
+[0;32m[SUCCESS][0m ✓ Test PASSED: Seize correctly rejected attempt before grace period expires
+[0;36m[INFO][0m Verifying no state changes...
+[0;32m[SUCCESS][0m ✓ Loan state unchanged (still IN_COLLECTION)
+[0;36m[INFO][0m Balance differences:
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER (LENDER2) (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:              [0;31m        -0.000678860 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTEST SUMMARY[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ TC09 PASSED: Seize correctly rejects attempt before grace period expires
+[0;36m[INFO][0m Grace period protection: Borrower has time to repay after collection
+[0;36m[INFO][0m Error message: 'too early'
+[0;36m[INFO][0m Minimum wait: 15 blocks (MIN_LOAN_DURATION)
+[0;36m[INFO][0m All state unchanged (except gas deduction)

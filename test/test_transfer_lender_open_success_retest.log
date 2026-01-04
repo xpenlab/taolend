@@ -1,0 +1,31 @@
+
+================================================================================
+[1mTest Case TC16: Original Lender, OPEN State, Success[0m
+================================================================================
+[96mObjective:[0m Verify successful transfer by original lender from OPEN state
+[96mStrategy:[0m OLD_LENDER transfers OPEN loan to NEW_LENDER after MIN_LOAN_DURATION
+[96mExpected:[0m Transaction succeeds, loan transferred with correct state changes
+[96m[INFO][0m 
+Setting up test environment...
+[92m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[96m[INFO][0m Using Loan ID 9 (netuid 3, OPEN state)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[92m[SUCCESS][0m ✓ INITIATOR (OLD_LENDER) registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[92m[SUCCESS][0m ✓ NEW_LENDER registered: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[92m[SUCCESS][0m ✓ Found OPEN loan: Loan ID 9
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Loan Netuid: 3
+[96m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[96m[INFO][0m   Old Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[96m[INFO][0m   Loan Amount: 20.02 TAO
+[96m[INFO][0m   Collateral: 100.00 ALPHA
+[96m[INFO][0m   Start Block: 186575
+[96m[INFO][0m 
+Timing Check:
+[96m[INFO][0m   Current Block: 186613
+[96m[INFO][0m   Blocks Elapsed: 38
+[96m[INFO][0m   MIN_LOAN_DURATION: 150
+[91m[ERROR][0m ✗ Too early to transfer: need 112 more blocks

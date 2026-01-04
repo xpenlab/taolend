@@ -1,0 +1,233 @@
+
+================================================================================
+[1mTest Case TC16: depositAlpha() - Different Hotkey (if=true)[0m
+================================================================================
+[0;96mObjective:[0m Verify depositAlpha works when using different hotkey
+[0;96mStrategy:[0m Deposit ALPHA using ANOTHER_HOTKEY (triggers move operation)
+[0;96mExpected:[0m Transaction succeeds, if condition = TRUE, moveStake called
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m 
+Test Parameters:
+[0;36m[INFO][0m   Registered User: BORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B)
+[0;36m[INFO][0m   Netuid: 3
+[0;36m[INFO][0m   Deposit Amount: 100.00 ALPHA
+[0;36m[INFO][0m   Using Hotkey: 5E7618Kn65YXAkWPh3NyNyEAmSxNBxjpJpn2KEfSr6qfwuPh
+[0;36m[INFO][0m   Hotkey (bytes32): 0x5a4981da2bdb331a09d3ae40fa545b48e7030db5b34d38fcba027202082cbd4d
+[0;36m[INFO][0m   Contract DELEGATE_HOTKEY: 0xc0e05929ff4129617b4e4ce19e83df0d89e10fba588235b10a605eecd377b048
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Using ANOTHER_HOTKEY (different from DELEGATE_HOTKEY)
+[0;32m[SUCCESS][0m ✓ If condition will be TRUE → moveStake() will be called
+[0;32m[SUCCESS][0m ✓ BORROWER1 registered
+[0;32m[SUCCESS][0m ✓ Deposits not paused
+[0;32m[SUCCESS][0m ✓ Subnet 3 is active
+[1;33m[WARNING][0m 
+⚠ IMPORTANT: This test requires 100.00 ALPHA staked to 5E7618Kn65... on netuid 3
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200578
+[1mTimestamp:[0m 1767330468
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=3 (ALPHA):          2100.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=3 (ALPHA):          2099.999999995 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.639520347 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):         770.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         300.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   subnetAlphaBalance[3]: 2100.00 ALPHA
+[0;36m[INFO][0m   userAlphaBalance[BORROWER1][3]: 770.00 ALPHA
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - deposit operations do not involve loans
+
+================================================================================
+[1mStep 4: Execute depositAlpha()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds
+  [0;96mConditional Branch:[0m if (_delegateHotkey != DELEGATE_HOTKEY) = TRUE
+  [0;96mBehavior:[0m transferStake() + moveStake()
+  [0;96mState Changes:[0m
+    - User's contract balance (netuid=3): +100.00 ALPHA
+    - Contract's subnetAlphaBalance[3]: +100.00 ALPHA
+    - ALPHA moved from ANOTHER_HOTKEY to DELEGATE_HOTKEY
+
+[0;36m[INFO][0m Depositing 100.00 ALPHA using ANOTHER_HOTKEY (different from contract)...
+[0;36m[INFO][0m Transaction sent: 7ca26a009214498b90d41abbb4a3f66b2a4f1aac6d3b8654c6be17c0107ffe9c
+[0;36m[INFO][0m Transaction mined in block 200579
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200579
+[1mTimestamp:[0m 1767330480
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=3 (ALPHA):          2200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=3 (ALPHA):          2199.999999994 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.638447797 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):         870.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         300.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State After:
+[0;36m[INFO][0m   subnetAlphaBalance[3]: 2100.00 → 2200.00 ALPHA
+[0;36m[INFO][0m   userAlphaBalance[BORROWER1][3]: 770.00 → 870.00 ALPHA
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - deposit operations do not involve loans
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Verifying test expectations...
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+[0;32m[SUCCESS][0m ✓ Subnet balance increased by 100.00 ALPHA
+[0;32m[SUCCESS][0m ✓ User contract balance increased by 100.00 ALPHA
+[0;36m[INFO][0m 
+⚠ moveStake() operation verification:
+[0;36m[INFO][0m   - ALPHA was transferred from ANOTHER_HOTKEY to contract
+[0;36m[INFO][0m   - Then moved from ANOTHER_HOTKEY to DELEGATE_HOTKEY
+[0;36m[INFO][0m   - This is confirmed by transaction success (would fail if move failed)
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+    netuid=3 (ALPHA):    [0;32m+       100.000000000 ALPHA[0m
+
+  [1mOn-chain Staking Changes:[0m
+    netuid=3 (ALPHA):    [0;32m+        99.999999999 ALPHA[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.001072550 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=3 (ALPHA):  [0;32m+       100.000000000 ALPHA[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mFINAL RESULT[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TC16 TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m depositAlpha() with ANOTHER_HOTKEY executed successfully
+[0;32m[SUCCESS][0m Conditional branch (if=true) verified: moveStake() called
+[0;32m[SUCCESS][0m All balances updated correctly
+
+[0;96mSummary:[0m
+  - Deposited: 100.00 ALPHA
+  - Netuid: 3
+  - User contract balance: 770.00 → 870.00 ALPHA
+  - Contract subnet balance: 2100.00 → 2200.00 ALPHA
+  - Used hotkey: ANOTHER_HOTKEY (different from contract)
+  - Operations: transferStake() + moveStake()
+  - Gas used: 107255 units

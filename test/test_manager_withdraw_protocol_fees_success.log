@@ -1,0 +1,193 @@
+
+================================================================================
+[1mTest Case TC02-03: withdrawProtocolFees - Success[0m
+================================================================================
+[0;96mObjective:[0m Verify successful protocol fee withdrawal
+[0;96mStrategy:[0m MANAGER withdraws accumulated protocol fees
+[0;96mExpected:[0m Transaction succeeds, fees transferred
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Manager: 0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Caller is the MANAGER
+[0;36m[INFO][0m Protocol fees accumulated: 0.133795624 TAO
+[0;36m[INFO][0m Fee receiver coldkey: 0x1fe858265b543c59596708ba5c98ec2406be4c56b983bd3314ebfdccf2d64dbf
+[0;36m[INFO][0m SubnetAlphaBalance[0]: 18.596385697 TAO
+[0;36m[INFO][0m Will withdraw half of available fees (0.066897812 TAO)
+[0;32m[SUCCESS][0m ✓ Fees available: 0.133795624 TAO
+[0;32m[SUCCESS][0m ✓ Sufficient TAO balance: 18.596385697 TAO
+[0;36m[INFO][0m Will withdraw: 0.066897812 TAO
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 206956
+[1mTimestamp:[0m 1767407004
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:                     999.990031480 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Not applicable for this test (no loan involved)
+
+================================================================================
+[1mStep 4: Execute withdrawProtocolFees[0m
+================================================================================
+
+[1m[0;32mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds (status=1)
+  [0;36mEvent:[0m WithdrawProtocolFees(sender, amount, to)
+  [0;96mState Changes:[0m
+    - protocolFeeAccumulated: -0.066897812 TAO
+    - subnetAlphaBalance[0]: -0.066897812 TAO
+    - On-chain staking[0]: -0.066897812 TAO
+    - FEE_RECEIVER_COLDKEY receives: +0.066897812 TAO
+
+[0;36m[INFO][0m Withdrawing 0.066897812 TAO protocol fees...
+[0;36m[INFO][0m Transaction hash: a379f38fab7caae4291336f12c195c233b83b9484665547ad8e1ccf7ac8b6418
+[0;36m[INFO][0m Waiting for transaction receipt...
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+[0;36m[INFO][0m Gas used: 63840
+[0;36m[INFO][0m Block number: 206957
+[0;32m[SUCCESS][0m ✓ WithdrawProtocolFees event emitted:
+[0;36m[INFO][0m   Sender: 0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267
+[0;36m[INFO][0m   Amount: 0.066897812 TAO
+[0;36m[INFO][0m   To: 0x1fe858265b543c59596708ba5c98ec2406be4c56b983bd3314ebfdccf2d64dbf
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 206957
+[1mTimestamp:[0m 1767407016
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.066897812 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.529487885 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.529487385 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:                     999.989393080 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Not applicable for this test (no loan involved)
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  Protocol Fee Accumulated: [0;31m        -0.066897812 TAO[0m
+
+  [1mInternal Accounting Changes:[0m
+    netuid=0 (TAO):      [0;31m        -0.066897812 TAO[0m
+
+  [1mOn-chain Staking Changes:[0m
+    netuid=0 (TAO):      [0;31m        -0.066897812 TAO[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:              [0;31m        -0.000638400 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mVerification Summary[0m
+================================================================================
+[0;36m[INFO][0m Protocol fee change: -0.066897812 TAO (expected: -0.066897812 TAO)
+[0;32m[SUCCESS][0m ✓ Protocol fee decreased correctly by 0.066897812 TAO
+[0;32m[SUCCESS][0m ✓ subnetAlphaBalance[0] decreased correctly by 0.066897812 TAO
+[0;36m[INFO][0m Remaining protocol fees: 0.066897812 TAO
+[0;32m[SUCCESS][0m ✓ Remaining fees correct: 0.066897812 TAO
+[0;32m[SUCCESS][0m ✓ Other contract state unchanged
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✅ TEST PASSED
+[0;32m[SUCCESS][0m Successfully withdrew 0.066897812 TAO in protocol fees
+[0;32m[SUCCESS][0m Protocol fee decreased by 0.066897812 TAO
+[0;32m[SUCCESS][0m subnetAlphaBalance[0] decreased by 0.066897812 TAO
+[0;32m[SUCCESS][0m Remaining protocol fees: 0.066897812 TAO
+[0;32m[SUCCESS][0m WithdrawProtocolFees event emitted correctly

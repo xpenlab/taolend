@@ -1,0 +1,261 @@
+
+================================================================================
+[1mTest Case TC22: Transfer With Rate Decrease[0m
+================================================================================
+[96mObjective:[0m Verify successful transfer with lower rate (borrower-friendly)
+[96mStrategy:[0m Transfer loan from higher rate to lower rate
+[96mExpected:[0m Transaction succeeds, borrower gets better interest rate
+[96m[INFO][0m 
+Setting up test environment...
+[92m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[92m[SUCCESS][0m Contract loaded: 0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC
+
+================================================================================
+[1mStep 0: Select Loan[0m
+================================================================================
+[96m[INFO][0m This test requires a loan with a higher rate that can be decreased
+[96m[INFO][0m Example: Loan 10 (0.9% rate) can be decreased to 0.5%
+
+[93mEnter loan ID to use: [0m
+================================================================================
+[1mStep 1: Verify Setup Conditions[0m
+================================================================================
+[92m[SUCCESS][0m ✓ Loan 10 is in OPEN state
+[96m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[96m[INFO][0m   Old Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m   Old Rate: 9000000 (0.90%)
+[96m[INFO][0m   Loan Amount: 20.00 TAO
+[96m[INFO][0m   Collateral: 50.00 ALPHA
+[96m[INFO][0m   Start Block: 187162
+[96m[INFO][0m 
+Timing Check:
+[96m[INFO][0m   Current Block: 187210
+[96m[INFO][0m   Blocks Elapsed: 48
+[96m[INFO][0m   MIN_LOAN_DURATION: 15
+[92m[SUCCESS][0m ✓ MIN_LOAN_DURATION satisfied (elapsed: 48 > 15)
+[96m[INFO][0m 
+Loading lower rate offer for transfer...
+[92m[SUCCESS][0m ✓ New offer loaded
+[96m[INFO][0m   New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[96m[INFO][0m   New Rate: 6000000 (0.60%)
+[96m[INFO][0m 
+Rate Validation:
+[96m[INFO][0m   Old Rate: 9000000 (0.90%)
+[96m[INFO][0m   New Rate: 6000000 (0.60%)
+[96m[INFO][0m   150% Limit: 13500000
+[92m[SUCCESS][0m ✓ New rate is LOWER than old rate (decrease: 33.3%)
+[92m[SUCCESS][0m ✓ This is borrower-friendly (lower interest cost)
+[92m[SUCCESS][0m ✓ New rate passes 150% limit check
+[96m[INFO][0m 
+Expected Repayment:
+[96m[INFO][0m   Loan Amount: 20.00 TAO
+[96m[INFO][0m   Interest: 0.001200034 TAO
+[96m[INFO][0m   Repay Amount: 20.001783367 TAO
+[96m[INFO][0m   Protocol Fee: 0.000360010 TAO
+[96m[INFO][0m   Old Lender Gets: 20.001423357 TAO
+[96m[INFO][0m 
+NEW_LENDER TAO Balance: 30.00 TAO
+[92m[SUCCESS][0m ✓ NEW_LENDER has sufficient TAO
+
+================================================================================
+[1mStep 2: Capture Initial State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 187210
+[1mTimestamp:[0m 1767170052
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.084610815 TAO
+  Next Loan ID:                               11
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              85.001000000 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              85.000999500 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.917524630 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            40.164988544 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     809.976397540 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            30.003311750 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1093.298386415 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):         900.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 3: Execute Transfer Transaction[0m
+================================================================================
+[96m[INFO][0m Initiator: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De (OLD_LENDER)
+[96m[INFO][0m Transferring Loan 10 to lower rate...
+[96m[INFO][0m   Old Rate: 0.90%
+[96m[INFO][0m   New Rate: 0.60%
+[96m[INFO][0m Transaction sent: af6b65062d449c5e1ca7cca0e5dfdee3fe8c1ddbffb4f6d69a213db915687570
+[96m[INFO][0m Waiting for transaction confirmation...
+[92m[SUCCESS][0m ✓ Transaction succeeded!
+[96m[INFO][0m   Block: 187211
+[96m[INFO][0m   Gas Used: 313453
+
+================================================================================
+[1mStep 4: Capture Final State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 187211
+[1mTimestamp:[0m 1767170064
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.084978325 TAO
+  Next Loan ID:                               11
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              85.001000000 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              85.000999500 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.914390100 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            60.166429402 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     809.976397540 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            10.001503382 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1093.298386415 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):         900.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 5: Verify State Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  Protocol Fee Accumulated: [0;32m+         0.000367510 TAO[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.003134530 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=0 (TAO):    [0;32m+        20.001440858 TAO[0m
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    [1mContract Balance Changes:[0m
+      netuid=0 (TAO):    [0;31m       -20.001808368 TAO[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[96m[INFO][0m 
+Loan Data Verification:
+[96m[INFO][0m   Old loanDataId: 17
+[96m[INFO][0m   New loanDataId: 18
+[92m[SUCCESS][0m ✓ Loan data ID changed (new loan created)
+[96m[INFO][0m 
+Lender Verification:
+[96m[INFO][0m   Old Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m   New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[92m[SUCCESS][0m ✓ Lender changed to NEW_LENDER
+[96m[INFO][0m 
+================================================================================
+[96m[INFO][0m [1mCRITICAL VERIFICATION: Rate Decrease[0m
+[96m[INFO][0m ================================================================================
+[96m[INFO][0m Old Rate: 9000000 (0.90%)
+[96m[INFO][0m New Rate: 6000000 (0.60%)
+[92m[SUCCESS][0m ✓ RATE DECREASED SUCCESSFULLY
+[92m[SUCCESS][0m ✓ Decrease: 3000000 (33.3%)
+[92m[SUCCESS][0m ✓ 6000000 < 9000000
+[96m[INFO][0m 
+Borrower Benefit:
+[96m[INFO][0m   Old daily interest on 20.00 TAO:
+[96m[INFO][0m     0.180005249 TAO/day
+[96m[INFO][0m   New daily interest:
+[96m[INFO][0m     0.120010850 TAO/day
+[92m[SUCCESS][0m   Daily Savings: 0.059994399 TAO (33.3%)
+[96m[INFO][0m 
+New Loan State:
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Loan Amount: 20.001808368 TAO
+[96m[INFO][0m   Daily Rate: 6000000 (0.60%)
+[96m[INFO][0m   Start Block: 187211
+[92m[SUCCESS][0m ✓ New loan is in OPEN state
+
+================================================================================
+[1mTest Result: TC22 - PASSED[0m
+================================================================================
+[92m[SUCCESS][0m ✓ Transfer with rate decrease succeeded
+[92m[SUCCESS][0m ✓ Old Rate: 0.90% → New Rate: 0.60%
+[92m[SUCCESS][0m ✓ Rate validation: 6000000 < 9000000
+[92m[SUCCESS][0m ✓ Borrower benefits from lower interest rate
+[92m[SUCCESS][0m ✓ Loan transferred from OLD_LENDER to NEW_LENDER
+[92m[SUCCESS][0m ✓ All balance changes verified

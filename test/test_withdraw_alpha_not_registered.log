@@ -1,0 +1,211 @@
+
+================================================================================
+[1mTest Case TC31: withdrawAlpha() - Not Registered[0m
+================================================================================
+[0;96mObjective:[0m Verify withdrawAlpha fails when user is not registered
+[0;96mStrategy:[0m Attempt withdrawal with unregistered user
+[0;96mExpected:[0m Transaction reverts with 'not registered'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Finding unregistered account...
+[0;32m[SUCCESS][0m Found unregistered account: LENDER3 (0xd4A1cC52b0dE1779caD750e00bDAEe24693E0184)
+[0;36m[INFO][0m 
+Test Parameters:
+[0;36m[INFO][0m   Unregistered User: LENDER3 (0xd4A1cC52b0dE1779caD750e00bDAEe24693E0184)
+[0;36m[INFO][0m   Netuid: 2
+[0;36m[INFO][0m   Withdraw Amount: 100.00 ALPHA
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ LENDER3 NOT registered (as required)
+[0;36m[INFO][0m Subnet 2 active: False
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200699
+[1mTimestamp:[0m 1767331920
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER3 (0xd4A1cC52b0dE1779caD750e00bDAEe24693E0184):[0m
+    EVM Balance:                     999.997219210 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   subnetAlphaBalance[2]: 0.00 ALPHA
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdraw operations do not involve loans
+
+================================================================================
+[1mStep 4: Execute withdrawAlpha()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31mRevert:[0m 'not registered'
+  [0;96mReason:[0m LENDER3 is not registered (onlyRegistered modifier)
+  [0;96mState Changes:[0m
+    - No state changes (transaction reverts)
+    - Only gas deducted from user's EVM TAO
+
+[0;36m[INFO][0m Attempting to withdraw 100.00 ALPHA...
+[0;36m[INFO][0m Transaction sent: 882ff4a240da6a427ede6f7ddfdee9b9bbbc3fd48c2fe3a1587c0b5f0d89f7ef
+[0;36m[INFO][0m Transaction mined in block 200700
+[1;33m[WARNING][0m Transaction reverted (as expected)
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200700
+[1mTimestamp:[0m 1767331932
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER3 (0xd4A1cC52b0dE1779caD750e00bDAEe24693E0184):[0m
+    EVM Balance:                     999.996979890 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m   subnetAlphaBalance[2]: 0.00 → 0.00 ALPHA
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdraw operations do not involve loans
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Verifying test expectations...
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+[0;32m[SUCCESS][0m ✓ Subnet balance unchanged
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER3 (0xd4A1cC52b0dE1779caD750e00bDAEe24693E0184):[0m
+    EVM Balance:              [0;31m        -0.000239320 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Expected changes:
+[0;36m[INFO][0m   - LENDER3 EVM TAO: decreased by gas cost only
+[0;36m[INFO][0m   - All other balances: unchanged
+
+================================================================================
+[1mFINAL RESULT[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TC31 TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m withdrawAlpha() correctly reverted with 'not registered'
+[0;32m[SUCCESS][0m All state validations passed
+
+[0;96mSummary:[0m
+  - Unregistered user cannot call withdrawAlpha()
+  - onlyRegistered modifier working correctly
+  - Subnet balance unchanged: 0.00 ALPHA

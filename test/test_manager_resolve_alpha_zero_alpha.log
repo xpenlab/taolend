@@ -1,0 +1,190 @@
+
+================================================================================
+[1mTest Case TC06-07: resolveAlpha - User Has No ALPHA[0m
+================================================================================
+[0;96mObjective:[0m Verify resolveAlpha fails when user has no ALPHA balance
+[0;96mStrategy:[0m Manager attempts resolution for user with zero ALPHA
+[0;96mExpected:[0m Transaction reverts with 'zero alpha'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Caller: 0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267 (MANAGER)
+[0;36m[INFO][0m Test user: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De (LENDER1)
+[0;36m[INFO][0m Test netuid: 5
+[0;36m[INFO][0m Test TAO amount: 10.0 TAO
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Caller is the MANAGER
+[0;36m[INFO][0m User ALPHA balance on netuid 5: 0.0 ALPHA
+[0;32m[SUCCESS][0m ✓ User has no ALPHA balance on this netuid
+[0;36m[INFO][0m This test will fail on 'zero alpha' OR earlier validation check
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 207882
+[1mTimestamp:[0m 1767418116
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.066897812 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.529487885 TAO
+    netuid=5 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.529487385 TAO
+    netuid=5 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (caller) (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:                     999.984928620 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=5 (ALPHA):           0.000000000 ALPHA
+
+  [1mTest User (LENDER1) (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     622.853974835 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            14.000100000 TAO
+      netuid=5 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Not applicable for resolveAlpha function (no loan involved)
+
+================================================================================
+[1mStep 4: Execute resolveAlpha for User with No ALPHA (expect REVERT)[0m
+================================================================================
+
+[1m[0;31mExpected Result:[0m
+  [0;31mFailure:[0m Transaction reverts (status=0)
+  [0;31mError:[0m 'zero alpha' OR earlier validation error
+  [0;96mState Changes:[0m
+    - No state changes except gas deduction
+
+[0;36m[INFO][0m Attempting to resolve ALPHA for user with no balance...
+[0;36m[INFO][0m Transaction hash: 0cbe0cd10a35a6c28b9ad5607878a884ac11f7aa30a44807a364bd60ef8189b6
+[0;36m[INFO][0m Waiting for transaction receipt...
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+[0;36m[INFO][0m Gas used: 34015
+[0;36m[INFO][0m Block number: 207883
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 207883
+[1mTimestamp:[0m 1767418128
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.066897812 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.529487885 TAO
+    netuid=5 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.529487385 TAO
+    netuid=5 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (caller) (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:                     999.984588470 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=5 (ALPHA):           0.000000000 ALPHA
+
+  [1mTest User (LENDER1) (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     622.853974835 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            14.000100000 TAO
+      netuid=5 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Not applicable for resolveAlpha function (no loan involved)
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (caller) (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:              [0;31m        -0.000340150 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mVerification Summary[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ User ALPHA balance unchanged: 0.0 ALPHA
+[0;32m[SUCCESS][0m ✓ Contract state unchanged (no resolution occurred)
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✅ TEST PASSED
+[0;32m[SUCCESS][0m Transaction reverted as expected
+[0;32m[SUCCESS][0m resolveAlpha correctly rejects user with no ALPHA
+[0;32m[SUCCESS][0m User must have ALPHA balance to be resolved

@@ -1,0 +1,212 @@
+
+================================================================================
+[1mTest Case TC03: Loan Already Claimed[0m
+================================================================================
+[0;96mObjective:[0m Verify refinance fails when loan is in CLAIMED state
+[0;96mStrategy:[0m Attempt to refinance a loan that has been claimed
+[0;96mExpected:[0m Transaction reverts with 'loan inactive'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;32m[SUCCESS][0m BORROWER1 is registered
+[0;32m[SUCCESS][0m NEW_LENDER (LENDER2) is registered
+[0;36m[INFO][0m Finding a CLAIMED loan for testing...
+[0;32m[SUCCESS][0m Found CLAIMED loan: ID=1, netuid=3
+[0;36m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   Collateral: 150.00 ALPHA, Loan: 30.00 TAO
+[0;36m[INFO][0m Loading NEW_LENDER's offer...
+[0;32m[SUCCESS][0m Found existing offer for NEW_LENDER: 290f8994967f7a9cb583843fe0933d91dfa02ea3bfc4a9b3c6509bd4ca03bc39.json
+[0;32m[SUCCESS][0m NEW_LENDER has sufficient TAO: 25.00 TAO
+
+================================================================================
+[1mSTEP 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 188677
+[1mTimestamp:[0m 1767187656
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.085303354 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              50.001100000 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              50.001099500 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.290018185 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     814.969239950 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            25.004170152 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 1
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[1;33m[WARNING][0m State: 3 (CLAIMED)
+[0;36m[INFO][0m Loan Amount: 30.00 TAO
+[0;36m[INFO][0m Collateral: 150.00 ALPHA
+
+================================================================================
+[1mSTEP 4: Execute Test Operation - Refinance[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31m✗ Revert:[0m 'loan inactive'
+  [0;96mReason:[0m Loan is in CLAIMED state (_requireLoanActive)
+  [0;96mState Changes:[0m
+    - No state changes (transaction reverts)
+    - Only gas deducted from borrower's EVM TAO
+[0;36m[INFO][0m 
+Attempting to refinance loan 1...
+[1;33m[WARNING][0m Loan State: CLAIMED (inactive)
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[0;36m[INFO][0m New Loan Amount: 30.00 TAO
+[0;36m[INFO][0m New Offer ID: b')\x0f\x89\x94\x96\x7fz\x9c\xb5\x83\x84?\xe0\x93=\x91'...
+[0;32m[SUCCESS][0m ✓ Gas estimation failed (expected): 'loan inactive'
+[0;36m[INFO][0m 
+Transaction sent: 1df8193220fa0c25aae61dec40e86de9003eb920ae66e0333fc56592fa65f540
+[0;36m[INFO][0m Transaction mined in block 188678
+
+================================================================================
+[1mSTEP 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 188678
+[1mTimestamp:[0m 1767187668
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.085303354 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              50.001100000 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              50.001099500 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.289228835 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     814.969239950 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            25.004170152 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 1
+[0;36m[INFO][0m State: 3 (CLAIMED)
+[0;36m[INFO][0m Loan Amount: 30.00 TAO
+
+================================================================================
+[1mSTEP 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Transaction status: 0
+[0;32m[SUCCESS][0m ✓ Transaction REVERTED as expected
+[0;32m[SUCCESS][0m ✓ Test PASSED: Refinance correctly rejected CLAIMED loan
+[0;36m[INFO][0m Verifying no state changes...
+[0;32m[SUCCESS][0m ✓ Loan state unchanged (CLAIMED)
+[0;32m[SUCCESS][0m ✓ Loan data ID unchanged
+[0;36m[INFO][0m Balance differences:
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.000789350 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTEST SUMMARY[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ TC03 PASSED: Refinance correctly rejects CLAIMED loans
+[0;36m[INFO][0m Function tested: _requireLoanActive
+[0;36m[INFO][0m Error message: 'loan inactive'
+[0;36m[INFO][0m All state unchanged (except gas deduction)

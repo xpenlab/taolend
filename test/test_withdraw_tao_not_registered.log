@@ -1,0 +1,193 @@
+
+================================================================================
+[1mTest Case TC11: withdrawTao() - Not Registered[0m
+================================================================================
+[0;96mObjective:[0m Verify withdrawTao reverts when user is not registered
+[0;96mTests:[0m onlyRegistered modifier (line 232)
+[0;96mExpected:[0m Transaction reverts with 'not registered' error
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m 
+Test Parameters:
+[0;36m[INFO][0m   Unregistered User: BORROWER3 (0x0D6380333eF7cFC9C55c7D73E1bF132c4Cf8A800)
+[0;36m[INFO][0m   Withdraw Amount: 1.00 TAO
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ BORROWER3 is not registered: 0x0D6380333eF7cFC9C55c7D73E1bF132c4Cf8A800
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200036
+[1mTimestamp:[0m 1767323964
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              28.595819031 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              28.595818531 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER3 (0x0D6380333eF7cFC9C55c7D73E1bF132c4Cf8A800):[0m
+    EVM Balance:                     999.996633870 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdrawal operations do not involve loans
+
+================================================================================
+[1mStep 4: Execute withdrawTao()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31mFailure:[0m Transaction reverts
+  [0;96mError:[0m "not registered"
+  [0;96mCheck:[0m onlyRegistered modifier (line 232)
+
+[0;36m[INFO][0m Attempting to withdraw 1.00 TAO...
+[0;36m[INFO][0m User: 0x0D6380333eF7cFC9C55c7D73E1bF132c4Cf8A800 (BORROWER3, not registered)
+[0;36m[INFO][0m Transaction sent: b0bb968905bf808c8e368a61d70c506c69544cc6af35b7fec608306348d47329
+[0;36m[INFO][0m Transaction mined in block 200037
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200037
+[1mTimestamp:[0m 1767323976
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              28.595819031 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              28.595818531 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER3 (0x0D6380333eF7cFC9C55c7D73E1bF132c4Cf8A800):[0m
+    EVM Balance:                     999.996384910 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdrawal operations do not involve loans
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Verifying test expectations...
+[0;32m[SUCCESS][0m ✓ Transaction failed as expected
+[0;36m[INFO][0m 
+Verifying no state changes...
+[0;32m[SUCCESS][0m ✓ User balance unchanged
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER3 (0x0D6380333eF7cFC9C55c7D73E1bF132c4Cf8A800):[0m
+    EVM Balance:              [0;31m        -0.000248960 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Expected: No changes (transaction reverted)
+
+================================================================================
+[1mFINAL RESULT[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TC11 TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m withdrawTao() correctly rejects unregistered users
+[0;32m[SUCCESS][0m onlyRegistered modifier working as expected
+
+[0;96mSummary:[0m
+  - User: BORROWER3 (not registered)
+  - Attempted withdrawal: 1.00 TAO
+  - Result: Transaction reverted ✓
+  - Error: 'not registered' (line 232)

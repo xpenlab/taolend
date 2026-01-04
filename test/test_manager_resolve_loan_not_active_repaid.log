@@ -1,0 +1,185 @@
+
+================================================================================
+[1mTest Case TC05-02: resolveLoan - Loan Not Active (REPAID)[0m
+================================================================================
+[0;96mObjective:[0m Verify resolveLoan fails when loan is already repaid
+[0;96mStrategy:[0m Use existing repaid loan and attempt resolve
+[0;96mExpected:[0m Transaction reverts with 'loan inactive'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+
+================================================================================
+[1mStep 0: Use Existing Repaid Loan[0m
+================================================================================
+[0;36m[INFO][0m Using Loan 2 for testing...
+[0;32m[SUCCESS][0m ✓ Loan 2 is in REPAID state (state=2)
+[0;36m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   Collateral: 100.000000 ALPHA
+[0;36m[INFO][0m   Netuid: 3
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 214167
+[1mTimestamp:[0m 1767493536
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.066897812 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.529487885 TAO
+    netuid=3 (ALPHA):          1490.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.529487385 TAO
+    netuid=3 (ALPHA):          1489.999999988 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (caller) (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:                     999.983408870 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan 2 State: REPAID (state=2)
+[0;36m[INFO][0m Loan DataId: 2
+[0;36m[INFO][0m Loan Amount: 20.000000 TAO
+[0;36m[INFO][0m Collateral: 100.000000 ALPHA
+
+================================================================================
+[1mStep 4: Execute resolveLoan (expect REVERT)[0m
+================================================================================
+
+[1m[0;31mExpected Result:[0m
+  [0;31mFailure:[0m Transaction reverts (status=0)
+  [0;31mError:[0m 'loan inactive'
+  [0;96mReason:[0m Loan is in REPAID state (not OPEN or IN_COLLECTION)
+  [0;96mState Changes:[0m
+    - No state changes except gas deduction
+
+[0;36m[INFO][0m Attempting to resolve repaid loan 2...
+[0;36m[INFO][0m Transaction hash: e9a01cd2bf150d36a00859aabc3aa7683daddc1b1e37e70c6f596518adcc5a65
+[0;36m[INFO][0m Waiting for transaction receipt...
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+[0;36m[INFO][0m Gas used: 60322
+[0;36m[INFO][0m Block number: 214168
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 214168
+[1mTimestamp:[0m 1767493548
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.066897812 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.529487885 TAO
+    netuid=3 (ALPHA):          1490.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.529487385 TAO
+    netuid=3 (ALPHA):          1489.999999988 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (caller) (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:                     999.982805650 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan 2 State: REPAID (state=2)
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mMANAGER (caller) (0x2Efa1f0a487Ebbcbc28b64C56BBfb235Bc66C267):[0m
+    EVM Balance:              [0;31m        -0.000603220 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mVerification Summary[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Loan state unchanged: REPAID (state=2)
+[0;32m[SUCCESS][0m ✓ Contract state unchanged (no loan resolution occurred)
+[0;36m[INFO][0m 
+Loan State Verification:
+[0;36m[INFO][0m   Loan state: REPAID (state=2)
+[0;36m[INFO][0m   _requireLoanActive() requires state OPEN(0) or IN_COLLECTION(1)
+[0;36m[INFO][0m   REPAID state should be rejected
+[0;32m[SUCCESS][0m ✓ _requireLoanActive validation prevented resolution
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✅ TEST PASSED
+[0;32m[SUCCESS][0m Transaction reverted with 'loan inactive' as expected
+[0;32m[SUCCESS][0m Cannot resolve loan in REPAID state
+[0;32m[SUCCESS][0m _requireLoanActive validation working correctly

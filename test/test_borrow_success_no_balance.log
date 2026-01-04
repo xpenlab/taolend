@@ -1,0 +1,256 @@
+
+================================================================================
+[1mTest Case TC11: Success - No Existing Balance[0m
+================================================================================
+[0;96mObjective:[0m Verify successful borrow when borrower has no existing loan
+[0;96mStrategy:[0m Execute borrow with all conditions valid
+[0;96mExpected:[0m Transaction succeeds, loan created, balances updated
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Searching for active offers from LENDER1...
+[0;32m[SUCCESS][0m Found active offer: 1bce447ac6df6624e069c2f95a7fb3615a1f2338339c53252f7a48e1226394b5.json
+[0;36m[INFO][0m 
+Test Parameters:
+[0;36m[INFO][0m   Netuid: 3
+[0;36m[INFO][0m   Borrow Amount: 30.00 TAO
+[0;36m[INFO][0m   Collateral: 150.00 ALPHA
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Borrower registered
+[0;32m[SUCCESS][0m ✓ Lender registered
+[0;32m[SUCCESS][0m ✓ Contract not paused
+[0;32m[SUCCESS][0m ✓ Subnet 3 active
+[0;32m[SUCCESS][0m ✓ Lender has sufficient TAO: 70.00 TAO
+[0;32m[SUCCESS][0m ✓ Borrower has sufficient ALPHA: 850.00 ALPHA
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 178199
+[1mTimestamp:[0m 1767061920
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                1
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              70.000100000 TAO
+    netuid=3 (ALPHA):          1000.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              70.000099500 TAO
+    netuid=3 (ALPHA):           999.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     640.943940020 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            70.000100000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1018.375195665 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         850.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):        1000.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   nextLoanId: 1
+[0;36m[INFO][0m   nextLoanDataId: 1
+[0;36m[INFO][0m   userLendBalance[LENDER1][offerId]: 30.00 TAO
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Reading loan state for loan ID 1 (to be created)...
+[0;36m[INFO][0m Cannot read loan 1 (expected for non-existent loan): 'NoneType' object is not subscriptable
+
+================================================================================
+[1mStep 4: Execute borrow()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds (status=1)
+  [0;36mEvent:[0m CreateLoan(...)
+  [0;96mState Changes:[0m
+    - nextLoanId: 1 → 2
+    - Loan created with ID 1
+    - Borrower receives 30.00 TAO
+    - 150.00 ALPHA collateral locked
+
+[0;36m[INFO][0m Borrowing 30.00 TAO with 150.00 ALPHA collateral...
+[0;36m[INFO][0m Transaction sent: 861793abfa49b32869f3c19b17b0e8725171b0045b605b029356b45f76ed5bde
+[0;36m[INFO][0m Transaction mined in block 178200
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 178200
+[1mTimestamp:[0m 1767061932
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                2
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              40.000100000 TAO
+    netuid=3 (ALPHA):          1000.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              40.000099500 TAO
+    netuid=3 (ALPHA):           999.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     640.943940020 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            40.000100000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1048.371406165 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         700.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):        1000.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State After:
+[0;36m[INFO][0m   nextLoanId: 1 → 2
+[0;36m[INFO][0m   nextLoanDataId: 1 → 2
+[0;36m[INFO][0m   userLendBalance[LENDER1][offerId]: 30.00 → 60.00 TAO
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Reading created loan 1...
+[0;32m[SUCCESS][0m ✓ Loan 1 created successfully
+[0;36m[INFO][0m 
+Loan Term:
+[0;36m[INFO][0m   borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   collateralAmount: 150.00 ALPHA
+[0;36m[INFO][0m   netuid: 3
+[0;36m[INFO][0m   loanDataId: 1
+[0;36m[INFO][0m 
+Loan Data:
+[0;36m[INFO][0m   loanId: 1
+[0;36m[INFO][0m   loanAmount: 30.00 TAO
+[0;36m[INFO][0m   state: 0 (OPEN)
+[0;36m[INFO][0m   startBlock: 178200
+[0;36m[INFO][0m   initiator: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+[0;32m[SUCCESS][0m ✓ CreateLoan event emitted:
+[0;36m[INFO][0m   borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   loanId: 1
+[0;36m[INFO][0m   loanDataId: 1
+[0;36m[INFO][0m   offerId: 1bce447ac6df6624e069c2f95a7fb3615a1f2338339c53252f7a48e1226394b5
+[0;36m[INFO][0m   collateralAmount: 150.00 ALPHA
+[0;36m[INFO][0m   loanAmount: 30.00 TAO
+[0;32m[SUCCESS][0m ✓ nextLoanId incremented: 1 → 2
+[0;32m[SUCCESS][0m ✓ Lend balance increased by 30.00 TAO
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  Next Loan ID:             [0;32m+                   1[0m
+
+  [1mInternal Accounting Changes:[0m
+    netuid=0 (TAO):      [0;31m       -30.000000000 TAO[0m
+
+  [1mOn-chain Staking Changes:[0m
+    netuid=0 (TAO):      [0;31m       -30.000000000 TAO[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    [1mContract Balance Changes:[0m
+      netuid=0 (TAO):    [0;31m       -30.000000000 TAO[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;32m+        29.996210500 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=3 (ALPHA):  [0;31m      -150.000000000 ALPHA[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m TC11: Success - No Existing Balance
+[0;32m[SUCCESS][0m Borrow transaction succeeded, loan created successfully
+[0;32m[SUCCESS][0m All state validations passed
+[0;32m[SUCCESS][0m Balance changes verified correctly
+
+[0;96mSummary:[0m
+  - First borrow transaction succeeded
+  - Loan created with ID 1
+  - Borrower received 30.00 TAO
+  - 150.00 ALPHA collateral locked
+  - All validations passed

@@ -1,0 +1,219 @@
+
+================================================================================
+[1mTest Case TC12: Bad Alpha Price[0m
+================================================================================
+[0;96mObjective:[0m Verify refinance fails when offer's maxAlphaPrice is too high (>= 90% of on-chain price)
+[0;96mStrategy:[0m Create offer with maxAlphaPrice >= 90% of on-chain price
+[0;96mExpected:[0m Transaction reverts with 'bad price'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;32m[SUCCESS][0m BORROWER1 is registered
+[0;32m[SUCCESS][0m NEW_LENDER (LENDER2) is registered
+[0;36m[INFO][0m Finding active loan for BORROWER1...
+[0;32m[SUCCESS][0m Found active loan: ID=12, netuid=3
+[0;36m[INFO][0m   Collateral: 850.00 ALPHA, Loan: 15.00 TAO
+[0;36m[INFO][0m Querying on-chain ALPHA price...
+[0;32m[SUCCESS][0m On-chain ALPHA price: 0.5634 TAO per ALPHA
+[0;36m[INFO][0m Safe threshold (90%): 0.5071 TAO per ALPHA
+[1;33m[WARNING][0m Setting maxAlphaPrice to 95%: 0.5352 TAO per ALPHA (TOO HIGH)
+[0;36m[INFO][0m Creating offer for NEW_LENDER with UNSAFE maxAlphaPrice...
+[0;32m[SUCCESS][0m Created offer: offerId=b'\x99\x8c\xfe\x85\xed\xd9C<tu\x0b`>\x860\x94\xa9\x10=\x8f\xfaY\x05\xcd\x14l}h\xd6\xdb\xe8\x8f', netuid=3
+[1;33m[WARNING][0m Offer maxAlphaPrice: 0.5352 TAO per ALPHA (95% of on-chain)
+[0;36m[INFO][0m Refinance amount: 15.00 TAO
+
+================================================================================
+[1mSTEP 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 188891
+[1mTimestamp:[0m 1767190224
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.085303354 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              44.996929848 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              44.996929348 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.285068945 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     819.971475292 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            20.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 12
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m Loan Netuid: 3
+[0;36m[INFO][0m State: 0 (OPEN)
+[0;36m[INFO][0m Loan Amount: 15.00 TAO
+[0;36m[INFO][0m Collateral: 850.00 ALPHA
+
+================================================================================
+[1mSTEP 4: Execute Test Operation - Refinance[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31m✗ Revert:[0m 'bad price'
+  [0;96mReason:[0m Offer maxAlphaPrice (0.5352) >= 90% of on-chain price (0.5071)
+  [0;96mState Changes:[0m
+    - No state changes (transaction reverts)
+    - Only gas deducted from borrower's EVM TAO
+[0;36m[INFO][0m 
+Attempting to refinance loan 12...
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[1;33m[WARNING][0m Offer maxAlphaPrice: 0.5352 TAO/ALPHA (95% - TOO HIGH)
+[0;36m[INFO][0m On-chain price: 0.5634 TAO/ALPHA
+[0;36m[INFO][0m Safe threshold: 0.5071 TAO/ALPHA (90%)
+[0;32m[SUCCESS][0m ✓ Gas estimation failed (expected): 'bad price'
+[0;36m[INFO][0m 
+Transaction sent: 275eeea77b873c895731074fe5e2490aa62a677f4d92756a15923f11d5622ce1
+[0;36m[INFO][0m Transaction mined in block 188892
+
+================================================================================
+[1mSTEP 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 188892
+[1mTimestamp:[0m 1767190236
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.085303354 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              44.996929848 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              44.996929348 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.283794975 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     819.971475292 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            20.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 12
+[0;36m[INFO][0m State: 0 (OPEN)
+[0;36m[INFO][0m Loan Amount: 15.00 TAO
+
+================================================================================
+[1mSTEP 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Transaction status: 0
+[0;32m[SUCCESS][0m ✓ Transaction REVERTED as expected
+[0;32m[SUCCESS][0m ✓ Test PASSED: Refinance correctly rejected unsafe ALPHA price
+[0;36m[INFO][0m Verifying no state changes...
+[0;32m[SUCCESS][0m ✓ Loan state unchanged (OPEN)
+[0;32m[SUCCESS][0m ✓ Loan data ID unchanged
+[0;36m[INFO][0m Balance differences:
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.001273970 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTEST SUMMARY[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ TC12 PASSED: Refinance correctly rejects unsafe ALPHA price
+[0;36m[INFO][0m Validation tested: Price safety check (require alphaPrice * 0.9 > maxAlphaPrice)
+[0;36m[INFO][0m Error message: 'bad price'
+[0;36m[INFO][0m On-chain ALPHA price: 0.5634 TAO/ALPHA
+[0;36m[INFO][0m Safe threshold (90%): 0.5071 TAO/ALPHA
+[0;36m[INFO][0m Offer maxAlphaPrice: 0.5352 TAO/ALPHA (95% - TOO HIGH)
+[0;36m[INFO][0m All state unchanged (except gas deduction)

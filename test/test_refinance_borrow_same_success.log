@@ -1,0 +1,164 @@
+
+================================================================================
+[1mTest Case TC16: Borrow Same, Success[0m
+================================================================================
+[96mObjective:[0m Verify successful refinance when borrowing same as repay amount
+[96mStrategy:[0m BORROWER refinances with same amount as repay amount (neutral refinance)
+[96mExpected:[0m Transaction succeeds, no difference payment/transfer, new loan created
+[96m[INFO][0m 
+Setting up test environment...
+[92m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[96m[INFO][0m Using Loan ID 11
+[96m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[92m[SUCCESS][0m ✓ Found active loan: Loan ID 11
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Netuid: 3
+[96m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[96m[INFO][0m   Current Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m   Loan Amount: 15.00 TAO
+[96m[INFO][0m   Collateral: 30.00 ALPHA
+[96m[INFO][0m   Start Block: 188227
+[92m[SUCCESS][0m ✓ BORROWER registered
+[96m[INFO][0m 
+Current Repayment Calculation:
+[96m[INFO][0m   Current Block: 194350
+[96m[INFO][0m   Blocks Elapsed: 6123
+[96m[INFO][0m   Loan Amount: 15.00 TAO
+[96m[INFO][0m   Daily Rate: 1.0000%
+[96m[INFO][0m   Interest Accrued: 0.127562500 TAO
+[96m[INFO][0m   Repay Amount: 15.127562500 TAO
+[96m[INFO][0m   Protocol Fee (30%): 0.038268750 TAO
+[96m[INFO][0m 
+Loading new offer...
+[92m[SUCCESS][0m ✓ New offer loaded from file
+[96m[INFO][0m   Offer ID: b'\xce8\x18=\x1eX\xbdY\xcf?\xc4\xbc!\xf6\xfeM(\x99\xca\x97\x10\xd7C4Y\x7f\xe8\xbd\xff\x01\x87:'
+[96m[INFO][0m   Offer Netuid: 3
+[96m[INFO][0m   Offer Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[96m[INFO][0m   Daily Rate: 1.0000%
+[96m[INFO][0m   Max Alpha Price: 0.501000000 TAO/ALPHA
+[92m[SUCCESS][0m ✓ Netuid matches
+[92m[SUCCESS][0m ✓ NEW_LENDER registered: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[96m[INFO][0m 
+Refinance Parameters:
+[96m[INFO][0m   Current Repay Amount: 15.127562500 TAO
+[96m[INFO][0m   New Loan Amount: 15.142690062 TAO (0.1% more)
+[96m[INFO][0m   Additional Borrow: 0.015127562 TAO
+[96m[INFO][0m   Effective scenario: Borrow slightly more (~same amount)
+[96m[INFO][0m 
+NEW_LENDER TAO Balance: 23.97 TAO
+[92m[SUCCESS][0m ✓ NEW_LENDER has sufficient TAO
+[92m[SUCCESS][0m ✓ All setup conditions satisfied
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[96m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 194350
+[1mTimestamp:[0m 1767255732
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.094199640 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              64.997029848 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              64.997029348 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.272857685 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.742133004 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.901927590 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            30.187187403 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     799.970325172 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            23.974076467 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[96m[INFO][0m 
+Contract State:
+[96m[INFO][0m   protocolFeeAccumulated: 0.094199640 TAO
+[96m[INFO][0m   OLD_LENDER userLendBalance[b'\x95\x9e\xf97 \x1452\xe0\x19'...]: 35.03 TAO
+[96m[INFO][0m   NEW_LENDER userLendBalance[b'\xce8\x18=\x1eX\xbdY\xcf?'...]: 0.00 TAO
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[96m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[96m[INFO][0m Reading loan state for loan ID 11...
+[96m[INFO][0m Loan State Before:
+[96m[INFO][0m   Loan Data ID: 20
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Netuid: 3
+[96m[INFO][0m   Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[96m[INFO][0m   Loan Amount: 15.00 TAO
+[96m[INFO][0m   Collateral: 30.00 ALPHA
+[96m[INFO][0m   Old Offer ID: b'\x95\x9e\xf97 \x1452\xe0\x19'...
+
+================================================================================
+[1mStep 4: Execute refinance()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [92mSuccess:[0m Refinance completes successfully
+  [96mState Changes:[0m
+    - Old loan data: state → REPAID
+    - New loan data created: state = OPEN
+    - loanTerm.loanDataId updated to new loan data ID
+  [96mBalance Changes:[0m
+    - BORROWER contract TAO[0]: unchanged (no difference)
+    - OLD_LENDER contract TAO[0]: +15.089293750 TAO
+    - OLD_LENDER userLendBalance: -15.00 TAO
+    - NEW_LENDER contract TAO[0]: -15.142690062 TAO
+    - NEW_LENDER userLendBalance: +15.142690062 TAO
+    - Protocol fee: +0.038268750 TAO
+[96m[INFO][0m 
+Attempting to refinance loan 11...
+[96m[INFO][0m Initiator: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B (BORROWER, registered)
+[96m[INFO][0m Old Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[96m[INFO][0m Current Repay Amount: 15.127562500 TAO
+[96m[INFO][0m New Loan Amount: 15.142690062 TAO
+[96m[INFO][0m Difference: 0 TAO (same amount)
+[96m[INFO][0m Transaction sent: 0972beed299df4b0f88819fae8de2081eb511c1519e81ef8348f1117e55c9580
+[96m[INFO][0m Transaction mined in block 194351
+[91m[ERROR][0m ❌ Transaction failed - UNEXPECTED!

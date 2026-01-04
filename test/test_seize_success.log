@@ -1,0 +1,242 @@
+
+================================================================================
+[1mTest Case TC10: Seize Success[0m
+================================================================================
+[0;96mObjective:[0m Verify lender can successfully seize collateral after grace period
+[0;96mStrategy:[0m Lender seizes IN_COLLECTION loan after MIN_LOAN_DURATION expires
+[0;96mExpected:[0m Transaction succeeds, state: IN_COLLECTION → CLAIMED, collateral transferred
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m MIN_LOAN_DURATION: 15 blocks
+[0;36m[INFO][0m Finding an IN_COLLECTION loan where grace period has passed...
+[0;32m[SUCCESS][0m Found loan in IN_COLLECTION state: ID=11
+[0;36m[INFO][0m   Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;36m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   State: IN_COLLECTION (1)
+[0;36m[INFO][0m   Collateral: 30.00 ALPHA
+[0;36m[INFO][0m   Loan: 9.30 TAO
+[0;36m[INFO][0m   Last update block: 194894
+[0;36m[INFO][0m   Current block: 195505
+[0;36m[INFO][0m   Seize allowed since block: 194909
+[0;32m[SUCCESS][0m   ✓ Grace period passed: 596 blocks ago
+[0;32m[SUCCESS][0m Found lender private key: LENDER1
+
+================================================================================
+[1mSTEP 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 195505
+[1mTimestamp:[0m 1767269592
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               14
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              60.576467966 TAO
+    netuid=3 (ALPHA):          1400.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              60.576467466 TAO
+    netuid=3 (ALPHA):          1399.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER (LENDER1) (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.893139180 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            35.980748935 TAO
+      netuid=3 (ALPHA):        1000.000000000 ALPHA
+
+  [1mBORROWER (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1127.664654217 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):         120.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 11
+[0;36m[INFO][0m State: 1 (IN_COLLECTION)
+[0;36m[INFO][0m Last Update Block: 194894
+[0;36m[INFO][0m Start Block: 194590
+[0;36m[INFO][0m Loan Amount: 9.30 TAO
+[0;36m[INFO][0m Collateral: 30.00 ALPHA
+[0;36m[INFO][0m Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m 
+Lender's initial ALPHA balance (netuid=3): 1000.00 ALPHA
+
+================================================================================
+[1mSTEP 4: Execute Test Operation - Seize[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;32m✓ Success:[0m Transaction succeeds
+  [0;96mState Changes:[0m
+    - Loan state: IN_COLLECTION (1) → CLAIMED (3)
+    - Lender ALPHA balance increases by 30.00 ALPHA
+    - Loan written off (lender loses 9.30 TAO)
+    - lastUpdateBlock updated to current block
+    - SeizeLoan event emitted
+[0;36m[INFO][0m 
+Executing seize for loan 11...
+[0;36m[INFO][0m Gas estimate: 93,699
+[0;36m[INFO][0m 
+Transaction sent: d602d6381897d20fa5b32631d5e498c07b79e7bb2121f8c04f8ed9493677d302
+[0;36m[INFO][0m Transaction mined in block 195506
+
+================================================================================
+[1mSTEP 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 195506
+[1mTimestamp:[0m 1767269604
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               14
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              60.576467966 TAO
+    netuid=3 (ALPHA):          1400.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              60.576467466 TAO
+    netuid=3 (ALPHA):          1399.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER (LENDER1) (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.892252900 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            35.980748935 TAO
+      netuid=3 (ALPHA):        1030.000000000 ALPHA
+
+  [1mBORROWER (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1127.664654217 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):         120.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 11
+[0;36m[INFO][0m State: 3 (CLAIMED)
+[0;36m[INFO][0m Last Update Block: 195506
+[0;36m[INFO][0m Start Block: 194590 (unchanged)
+[0;36m[INFO][0m Loan Amount: 9.30 TAO (unchanged)
+[0;36m[INFO][0m Collateral: 30.00 ALPHA (unchanged)
+[0;36m[INFO][0m 
+Lender's final ALPHA balance (netuid=3): 1030.00 ALPHA
+
+================================================================================
+[1mSTEP 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Transaction status: 1
+[0;32m[SUCCESS][0m ✓ Transaction SUCCEEDED
+[0;36m[INFO][0m 
+Verifying state transition...
+[0;32m[SUCCESS][0m ✓ Loan state changed: IN_COLLECTION (1) → CLAIMED (3)
+[0;32m[SUCCESS][0m ✓ lastUpdateBlock updated to 195506
+[0;32m[SUCCESS][0m ✓ startBlock unchanged: 194590
+[0;36m[INFO][0m 
+Verifying collateral transfer...
+[0;32m[SUCCESS][0m ✓ Lender received collateral: +30.00 ALPHA
+[0;36m[INFO][0m 
+Balance differences:
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER (LENDER1) (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.000886280 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=3 (ALPHA):  [0;32m+        30.000000000 ALPHA[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Verifying events...
+[0;32m[SUCCESS][0m ✓ SeizeLoan event emitted
+[0;36m[INFO][0m   lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;36m[INFO][0m   loanId: 11
+[0;36m[INFO][0m   loanDataId: 26
+[0;36m[INFO][0m   netuid: 3
+[0;36m[INFO][0m   block: 194590
+[0;36m[INFO][0m   collateralAmount: 30.00 ALPHA
+[0;36m[INFO][0m   loanAmount: 9.30 TAO
+[0;32m[SUCCESS][0m   ✓ Lender matches
+[0;32m[SUCCESS][0m   ✓ Loan ID matches
+[0;32m[SUCCESS][0m   ✓ Collateral amount matches
+
+================================================================================
+[1mTEST SUMMARY[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ TC10 PASSED: Seize successful
+[0;36m[INFO][0m State transition: IN_COLLECTION → CLAIMED
+[0;36m[INFO][0m Collateral transferred: 30.00 ALPHA to lender
+[0;36m[INFO][0m Loan written off: 9.30 TAO (lender's loss)
+[0;36m[INFO][0m SeizeLoan event emitted correctly

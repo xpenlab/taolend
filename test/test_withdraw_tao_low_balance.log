@@ -1,0 +1,195 @@
+
+================================================================================
+[1mTest Case TC12: withdrawTao() - Low Balance[0m
+================================================================================
+[0;96mObjective:[0m Verify withdrawTao reverts when user has insufficient balance
+[0;96mTests:[0m require(userAlphaBalance >= _amount, "low tao") at line 640
+[0;96mExpected:[0m Transaction reverts with 'low tao' error
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ LENDER1 registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;32m[SUCCESS][0m ✓ User has contract balance: 14.00 TAO
+[0;36m[INFO][0m   Attempting to withdraw: 24.00 TAO
+[0;36m[INFO][0m   Shortfall: 10.00 TAO
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200041
+[1mTimestamp:[0m 1767324024
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              28.595819031 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              28.595818531 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     622.859707455 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            14.000100000 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdrawal operations do not involve loans
+
+================================================================================
+[1mStep 4: Execute withdrawTao()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31mFailure:[0m Transaction reverts
+  [0;96mError:[0m "low tao"
+  [0;96mCheck:[0m require(userAlphaBalance[msg.sender][0] >= _amount, "low tao") at line 640
+
+[0;36m[INFO][0m Attempting to withdraw 24.00 TAO (more than balance)...
+[0;36m[INFO][0m User: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De (LENDER1, registered)
+[0;36m[INFO][0m User balance: 14.00 TAO
+[0;36m[INFO][0m Transaction sent: 580a07c06744722ec32521006e3da80abfc99ab6df9c19e95182762cfc5191db
+[0;36m[INFO][0m Transaction mined in block 200042
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 200042
+[1mTimestamp:[0m 1767324036
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              28.595819031 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              28.595818531 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     622.859384965 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            14.000100000 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdrawal operations do not involve loans
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Verifying test expectations...
+[0;32m[SUCCESS][0m ✓ Transaction failed as expected
+[0;36m[INFO][0m 
+Verifying no state changes...
+[0;32m[SUCCESS][0m ✓ User balance unchanged
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.000322490 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Expected: No changes (transaction reverted)
+
+================================================================================
+[1mFINAL RESULT[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TC12 TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m withdrawTao() correctly rejects withdrawal exceeding balance
+[0;32m[SUCCESS][0m Balance check (line 640) working as expected
+
+[0;96mSummary:[0m
+  - User: LENDER1 (registered)
+  - User balance: 14.00 TAO
+  - Attempted withdrawal: 24.00 TAO
+  - Shortfall: 10.00 TAO
+  - Result: Transaction reverted ✓
+  - Error: 'low tao' (line 640)

@@ -1,0 +1,187 @@
+
+================================================================================
+[1mTest Case TC08: Cancel with Invalid Offer ID[0m
+================================================================================
+[0;96mObjective:[0m Verify cancel(Offer) reverts when offerId doesn't match calculated value
+[0;96mStrategy:[0m Create valid offer, tamper with offerId, attempt to cancel
+[0;96mExpected:[0m Transaction reverts with 'bad offer id'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Searching for active offers from LENDER1...
+[0;32m[SUCCESS][0m Found active offer: 7463a53f8fc549e0349fc248134fa6833906ed12524449c550a625de6a276af9.json
+[0;36m[INFO][0m   Offer ID: 0x7463a53f...
+
+================================================================================
+[1mStep 0: Verify Setup and Tamper Offer ID[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ LENDER1 registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;32m[SUCCESS][0m ✓ Offer nonce matches: 1
+[0;36m[INFO][0m Original offerId: 0x7463a53f8fc549e0349fc248134fa6833906ed12524449c550a625de6a276af9
+[0;36m[INFO][0m Tampered offerId: 0x7463a53f8fc549e0349fc248134fa67c3906ed12524449c550a625de6a276af9
+[1;33m[WARNING][0m Offer ID has been tampered (byte 15 flipped)
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 174131
+[1mTimestamp:[0m 1767013104
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x878bCa7888dAa14f3e58A1e2Cab9a43aBE17aCac):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                0
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     840.948784550 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m canceledOffers[0x7463a53f...] = 0
+[0;36m[INFO][0m lenderNonce[0x951C84C6791F3a3959462A4DF624DfB5F70bE6De] = 1
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A for cancel operations
+
+================================================================================
+[1mStep 4: Execute cancel(Offer) with TAMPERED offerId[0m
+================================================================================
+
+[1m[0;31mExpected Result:[0m
+  [0;31mRevert:[0m Transaction reverts (status=0)
+  [1;33mReason:[0m 'bad offer id'
+  [0;96mState Changes:[0m None (only gas consumed)
+
+[0;36m[INFO][0m Attempting to cancel with tampered offerId...
+[0;36m[INFO][0m Transaction sent: 6bd3a8fb2fa776bd0fcaa2d45102a91ec5a19fd4ff8ae2419290aa429cd2d24a
+[0;36m[INFO][0m Transaction mined in block 174132
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected (status=0)
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 174132
+[1mTimestamp:[0m 1767013116
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x878bCa7888dAa14f3e58A1e2Cab9a43aBE17aCac):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                0
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):               0.000000000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):             0.000000000 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     840.948441280 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A for cancel operations
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+[0;36m[INFO][0m 
+State verification:
+[0;36m[INFO][0m   canceledOffers[0x7463a53f...]: 0 → 0
+[0;36m[INFO][0m   lenderNonce[0x951C84C6...]: 1 → 1
+[0;32m[SUCCESS][0m ✓ Contract state unchanged (canceledOffers=0, nonce=1)
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.000343270 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m Cancel operation correctly reverted for invalid offerId
+[0;32m[SUCCESS][0m Verification: offerId integrity check working correctly
+[0;32m[SUCCESS][0m No state changes except gas consumed

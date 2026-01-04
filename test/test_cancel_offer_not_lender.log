@@ -1,0 +1,209 @@
+
+================================================================================
+[1mTest Case TC02: cancel(Offer) - Not Lender[0m
+================================================================================
+[0;96mObjective:[0m Verify cancel(Offer) fails when initiator is not the lender
+[0;96mStrategy:[0m Borrower attempts to cancel lender's offer
+[0;96mExpected:[0m Transaction reverts with 'not lender'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Finding registered borrower...
+[0;32m[SUCCESS][0m Found registered borrower: BORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B)
+[0;36m[INFO][0m Searching for active offers from other lenders...
+[0;32m[SUCCESS][0m Found active offer: 10086f610f7cd173f0239e0ab1b075708f201f37bba1412fbf341f8f43930324.json
+[0;36m[INFO][0m   Offer ID: 0x10086f61...
+[0;36m[INFO][0m   Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[0;36m[INFO][0m   Borrower trying: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   Netuid: 3
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ BORROWER1 is registered: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;32m[SUCCESS][0m ✓ Borrower (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B) is NOT the lender (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736)
+[0;32m[SUCCESS][0m ✓ Offer is NOT cancelled
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 203341
+[1mTimestamp:[0m 1767363624
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=2 (ALPHA):          1070.000000000 ALPHA
+    netuid=3 (ALPHA):          1490.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=2 (ALPHA):          1069.999999997 ALPHA
+    netuid=3 (ALPHA):          1489.999999988 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.594968887 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=2 (ALPHA):        1070.000000000 ALPHA
+      netuid=3 (ALPHA):          60.000000000 ALPHA
+
+  [1mLENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     799.963630272 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             3.975488565 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m canceledOffers[0x10086f61...] = 0
+[0;36m[INFO][0m lenderNonce[0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736] = 0
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Offer State[0m
+================================================================================
+[0;36m[INFO][0m Offer ID: 0x10086f610f7cd173f0239e0ab1b075708f201f37bba1412fbf341f8f43930324
+[0;36m[INFO][0m Canceled block: 0 (0 = not canceled)
+[0;36m[INFO][0m Offer lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+
+================================================================================
+[1mStep 4: Execute cancel(Offer) - Should FAIL[0m
+================================================================================
+
+[1m[0;31mExpected Result:[0m
+  [0;31mRevert:[0m Transaction reverts with 'not lender'
+  [0;96mState Changes:[0m None (transaction reverted)
+    - canceledOffers[offerId] unchanged (still 0)
+    - lenderNonce unchanged
+    - All balances unchanged except gas
+
+[0;36m[INFO][0m Borrower BORROWER1 attempting to cancel lender's offer...
+[0;36m[INFO][0m Transaction hash: b05165001e0a7c497b6a6b1a33b3b2c15e39f7cc8c71157e016f8cd47df60fb6
+[0;36m[INFO][0m Waiting for transaction receipt...
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected (status=0)
+[0;36m[INFO][0m Expected revert reason: 'not lender'
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 203342
+[1mTimestamp:[0m 1767363636
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=2 (ALPHA):          1070.000000000 ALPHA
+    netuid=3 (ALPHA):          1490.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=2 (ALPHA):          1069.999999997 ALPHA
+    netuid=3 (ALPHA):          1489.999999988 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.594532267 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=2 (ALPHA):        1070.000000000 ALPHA
+      netuid=3 (ALPHA):          60.000000000 ALPHA
+
+  [1mLENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     799.963630272 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             3.975488565 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m canceledOffers[0x10086f61...] = 0
+[0;36m[INFO][0m lenderNonce[0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736] = 0
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Offer State[0m
+================================================================================
+[0;36m[INFO][0m Offer ID: 0x10086f610f7cd173f0239e0ab1b075708f201f37bba1412fbf341f8f43930324
+[0;36m[INFO][0m Canceled block: 0 (should still be 0)
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.000436620 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mVerification Summary[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ canceledOffers unchanged: 0 → 0
+[0;32m[SUCCESS][0m ✓ lenderNonce unchanged: 0 → 0
+[0;32m[SUCCESS][0m ✓ Contract state unchanged
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✅ TEST PASSED
+[0;32m[SUCCESS][0m Transaction reverted as expected with 'not lender'
+[0;32m[SUCCESS][0m Only lender can cancel their own offers
+[0;32m[SUCCESS][0m All state remains unchanged

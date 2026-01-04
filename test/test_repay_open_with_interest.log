@@ -1,0 +1,264 @@
+
+================================================================================
+[1mTest Case TC11: Success - Repay OPEN Loan With Accrued Interest[0m
+================================================================================
+[0;96mObjective:[0m Verify successful repayment with significant interest accrued
+[0;96mStrategy:[0m Find OPEN loan with elapsed time, verify interest calculation
+[0;96mExpected:[0m Success, loan state → REPAID, accurate interest
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ LENDER1 registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;32m[SUCCESS][0m ✓ BORROWER1 registered: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m 
+Searching for OPEN loan with most elapsed time...
+[0;36m[INFO][0m Current block: 181902
+[0;32m[SUCCESS][0m ✓ Found OPEN loan: Loan ID 5
+[0;36m[INFO][0m   Elapsed blocks since start: 8
+[0;36m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   Loan Amount: 20.00 TAO
+[0;36m[INFO][0m   Collateral: 150.00 ALPHA
+[0;36m[INFO][0m   Netuid: 3
+[0;36m[INFO][0m 
+Repayment Calculation:
+[0;36m[INFO][0m   Loan Amount: 20.000000000 TAO
+[0;36m[INFO][0m   Elapsed Blocks: 8
+[0;36m[INFO][0m   Interest: 0.000222222 TAO
+[0;36m[INFO][0m   Repay Amount: 20.000222222 TAO
+[0;36m[INFO][0m   Protocol Fee (30%): 0.000066666 TAO
+[0;36m[INFO][0m   Lender Receives (70%): 20.000155556 TAO
+[0;36m[INFO][0m 
+BORROWER1 TAO balance: 34.752052779 TAO
+[0;32m[SUCCESS][0m ✓ BORROWER1 has sufficient TAO for repayment
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 181902
+[1mTimestamp:[0m 1767106356
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.074512497 TAO
+  Next Loan ID:                                6
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              95.000600000 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              95.000599500 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.939582150 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            60.174034724 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1023.331532735 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            34.752052779 TAO
+      netuid=3 (ALPHA):         900.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   protocolFeeAccumulated: 0.074512497 TAO
+[0;36m[INFO][0m   userLendBalance[lender][offerId]: 20.000000000 TAO
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Reading loan state for loan ID 5...
+[0;36m[INFO][0m Loan State Before:
+[0;36m[INFO][0m   State: OPEN
+[0;36m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m   Loan Amount: 20.000000000 TAO
+[0;36m[INFO][0m   Collateral: 150.000000000 ALPHA
+[0;36m[INFO][0m   Start Block: 181894
+[0;32m[SUCCESS][0m ✓ Loan state confirmed: OPEN
+
+================================================================================
+[1mStep 4: Execute repay()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds
+  [0;96mLoan State:[0m OPEN → REPAID
+  [0;96mCollateral:[0m Returned to borrower
+  [0;96mTAO Flow:[0m
+    - Borrower pays: 20.000222222 TAO
+    - Lender receives: 20.000155556 TAO
+    - Protocol fee: 0.000066666 TAO
+  [0;96mCollateral Return:[0m
+    - Borrower receives: 150.000000000 ALPHA
+
+[0;36m[INFO][0m Repaying loan 5...
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B (BORROWER1)
+[0;36m[INFO][0m Transaction sent: 9cca32ff4eb1f1ce38868b088da8aaeb11ff950b8ee9f379a9c38f622413f751
+[0;36m[INFO][0m Transaction mined in block 181903
+[0;32m[SUCCESS][0m ✓ Transaction succeeded!
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 181903
+[1mTimestamp:[0m 1767106368
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.074587497 TAO
+  Next Loan ID:                                6
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              95.000600000 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              95.000599500 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.939582150 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            80.174209724 TAO
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1023.330409705 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            14.751802779 TAO
+      netuid=3 (ALPHA):        1050.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State After:
+[0;36m[INFO][0m   protocolFeeAccumulated: 0.074512497 → 0.074587497 TAO
+[0;36m[INFO][0m   userLendBalance: 20.000000000 → 0.000000000 TAO
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Reading loan state for loan ID 5...
+[0;36m[INFO][0m Loan State After:
+[0;36m[INFO][0m   State: REPAID
+[0;36m[INFO][0m   Last Update Block: 181903
+[0;36m[INFO][0m   Initiator (Repayer): 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+[0;32m[SUCCESS][0m ✓ Loan state: OPEN → REPAID
+[0;32m[SUCCESS][0m ✓ Loan initiator: BORROWER1 (repayer)
+[0;36m[INFO][0m 
+Recalculating expected values with actual repay block...
+[0;36m[INFO][0m   Repay Block: 181903
+[0;36m[INFO][0m   Actual Elapsed Blocks: 9
+[0;36m[INFO][0m   Actual Interest: 0.000250000 TAO
+[0;36m[INFO][0m   Actual Repay Amount: 20.000250000 TAO
+[0;36m[INFO][0m   Actual Protocol Fee: 0.000075000 TAO
+[0;36m[INFO][0m   Actual Lender Receives: 20.000175000 TAO
+[0;32m[SUCCESS][0m ✓ Protocol fee increased by 0.000075000 TAO
+[0;32m[SUCCESS][0m ✓ Lend balance decreased by 20.000000000 TAO
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  Protocol Fee Accumulated: [0;32m+         0.000075000 TAO[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    [1mContract Balance Changes:[0m
+      netuid=0 (TAO):    [0;32m+        20.000175000 TAO[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.001123030 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=0 (TAO):    [0;31m       -20.000250000 TAO[0m
+      netuid=3 (ALPHA):  [0;32m+       150.000000000 ALPHA[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Verifying balance changes...
+[0;32m[SUCCESS][0m ✓ Borrower TAO decreased: 20.000250000 TAO
+[0;32m[SUCCESS][0m ✓ Borrower ALPHA increased (collateral returned): 150.000000000 ALPHA
+[0;32m[SUCCESS][0m ✓ Lender TAO increased: 20.000175000 TAO
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m TC11: Success - Repay OPEN Loan With Accrued Interest
+[0;32m[SUCCESS][0m Repayment completed successfully
+[0;32m[SUCCESS][0m All state validations passed
+[0;32m[SUCCESS][0m All balance changes verified
+[0;32m[SUCCESS][0m Interest calculation accurate (0 RAO error)
+
+[0;96mSummary:[0m
+  - Loan successfully repaid by borrower
+  - Loan state: OPEN → REPAID
+  - Borrower paid: 20.000250000 TAO
+  - Lender received: 20.000175000 TAO
+  - Protocol fee: 0.000075000 TAO
+  - Collateral returned: 150.000000000 ALPHA
+  - Interest accrued: 0.000250000 TAO
+  - Elapsed blocks: 9

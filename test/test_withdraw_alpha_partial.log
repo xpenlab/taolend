@@ -1,0 +1,222 @@
+
+================================================================================
+[1mTest Case TC28: withdrawAlpha() - Partial Withdrawal[0m
+================================================================================
+[0;96mObjective:[0m Verify withdrawAlpha works correctly when withdrawing partial balance
+[0;96mStrategy:[0m Withdraw 50% of balance and verify remaining balance
+[0;96mExpected:[0m Transaction succeeds, partial withdrawal, remaining balance correct
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions & Preparation[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ BORROWER1 is registered
+[0;32m[SUCCESS][0m ✓ Subnet 3 is active
+[0;36m[INFO][0m Current user balance: 1120.00 ALPHA
+[0;36m[INFO][0m 
+Test Parameters:
+[0;36m[INFO][0m   User: BORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B)
+[0;36m[INFO][0m   Netuid: 3
+[0;36m[INFO][0m   Current Balance: 1120.00 ALPHA
+[0;36m[INFO][0m   Withdraw Amount: 560.00 ALPHA (50%)
+[0;36m[INFO][0m   Expected Remaining: 560.00 ALPHA
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 201173
+[1mTimestamp:[0m 1767337608
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=3 (ALPHA):          2550.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=3 (ALPHA):          2549.999999989 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.631567117 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):        1120.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         350.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   subnetAlphaBalance[3]: 2550.00 ALPHA
+[0;36m[INFO][0m   userAlphaBalance[BORROWER1][3]: 1120.00 ALPHA
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdraw operations do not involve loans
+
+================================================================================
+[1mStep 4: Execute withdrawAlpha() - Partial Withdrawal[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds
+  [0;96mState Changes:[0m
+    - userAlphaBalance[BORROWER1][3]: 1120.00 → 560.00 ALPHA
+    - subnetAlphaBalance[3]: 2550.00 → 1990.00 ALPHA
+    - Remaining balance: 560.00 ALPHA (50%)
+
+[0;36m[INFO][0m Withdrawing 560.00 ALPHA (50% of balance) from netuid 3...
+[0;36m[INFO][0m Transaction sent: 1f51658b0d1339f7406fe9b3b7d2728c4cbafd1db2aae6bb05b2e44a945ececd
+[0;36m[INFO][0m Transaction mined in block 201174
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+[0;36m[INFO][0m Gas used: 72534
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 201174
+[1mTimestamp:[0m 1767337620
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              18.596385697 TAO
+    netuid=3 (ALPHA):          1990.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              18.596385197 TAO
+    netuid=3 (ALPHA):          1989.999999989 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1137.630841777 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.487001508 TAO
+      netuid=3 (ALPHA):         560.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         910.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State After:
+[0;36m[INFO][0m   subnetAlphaBalance[3]: 2550.00 → 1990.00 ALPHA
+[0;36m[INFO][0m   userAlphaBalance[BORROWER1][3]: 1120.00 → 560.00 ALPHA
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - withdraw operations do not involve loans
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Verifying test expectations...
+[0;32m[SUCCESS][0m ✓ User contract balance decreased correctly: 1120.00 → 560.00 ALPHA
+[0;32m[SUCCESS][0m ✓ Remaining balance is 50%: 560.00 ALPHA
+[0;32m[SUCCESS][0m ✓ Subnet balance decreased correctly: 2550.00 → 1990.00 ALPHA
+[0;32m[SUCCESS][0m ✓ User still has remaining balance: 560.00 ALPHA
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+    netuid=3 (ALPHA):    [0;31m      -560.000000000 ALPHA[0m
+
+  [1mOn-chain Staking Changes:[0m
+    netuid=3 (ALPHA):    [0;31m      -560.000000000 ALPHA[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.000725340 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=3 (ALPHA):  [0;31m      -560.000000000 ALPHA[0m
+    [1m[0;35mStaking Changes:[0m
+      netuid=3 (ALPHA):  [0;32m+       560.000000000 ALPHA[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mFINAL RESULT[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TC28 TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m withdrawAlpha() partial withdrawal executed successfully
+[0;32m[SUCCESS][0m All state validations passed
+
+[0;96mSummary:[0m
+  - Withdrew 560.00 ALPHA (50%) from netuid 3
+  - User balance: 1120.00 → 560.00 ALPHA
+  - Remaining: 560.00 ALPHA (50%)
+  - Subnet balance: 2550.00 → 1990.00 ALPHA
+  - Gas used: 72534

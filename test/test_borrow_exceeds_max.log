@@ -1,0 +1,233 @@
+
+================================================================================
+[1mTest Case TC08: Exceeds Offer Maximum[0m
+================================================================================
+[0;96mObjective:[0m Verify borrow fails when cumulative borrows exceed offer maximum
+[0;96mStrategy:[0m Attempt borrow that would cause total to exceed maxTaoAmount
+[0;96mExpected:[0m Transaction reverts with 'exceeds max'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m Searching for active offers from LENDER1...
+[0;32m[SUCCESS][0m Found active offer: 1bce447ac6df6624e069c2f95a7fb3615a1f2338339c53252f7a48e1226394b5.json
+[0;36m[INFO][0m 
+Offer Status:
+[0;36m[INFO][0m   Max TAO Amount: 100.00 TAO
+[0;36m[INFO][0m   Current Lend Balance: 80.00 TAO
+[0;36m[INFO][0m   Remaining Capacity: 20.00 TAO
+[0;36m[INFO][0m 
+Test Parameters (Scenario B: Cumulative Exceeds Max):
+[0;36m[INFO][0m   Netuid: 3
+[0;36m[INFO][0m   Borrow Amount: 30.00 TAO
+[0;36m[INFO][0m   Collateral: 60.00 ALPHA
+[0;36m[INFO][0m   Would Result In: 110.00 TAO
+[0;36m[INFO][0m   Exceeds Max By: 10.00 TAO
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Lender registered
+[0;32m[SUCCESS][0m ✓ Borrower registered
+[0;32m[SUCCESS][0m ✓ Contract not paused
+[0;32m[SUCCESS][0m ✓ Subnet 3 active
+[0;32m[SUCCESS][0m ✓ Test condition met: 110.00 TAO > 100.00 TAO max
+[0;32m[SUCCESS][0m ✓ Borrower has sufficient ALPHA: 600.00 ALPHA
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 178332
+[1mTimestamp:[0m 1767063516
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                3
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              50.000200000 TAO
+    netuid=3 (ALPHA):          1000.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              50.000199500 TAO
+    netuid=3 (ALPHA):           999.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     610.942789900 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            50.000200000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1068.367083325 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         600.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):        1000.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   nextLoanId: 3
+[0;36m[INFO][0m   userLendBalance[LENDER1][offerId]: 80.00 TAO
+[0;36m[INFO][0m   maxTaoAmount: 100.00 TAO
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Skipped for negative test (no loan will be created)
+
+================================================================================
+[1mStep 4: Execute borrow() - Expected to Fail[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31mFailure:[0m Transaction reverts with 'exceeds max'
+  [0;96mReason:[0m userLendBalance + taoAmount > maxTaoAmount
+  [1;33mCalculation:[0m 80.00 + 30.00 = 110.00 > 100.00 TAO
+
+[0;36m[INFO][0m Attempting to borrow 30.00 TAO (should fail)...
+[0;36m[INFO][0m Transaction sent: 524d475d036312778b5a2390bda9f6746fe7bb542fbe625095bd7cfae216f6e8
+[0;36m[INFO][0m Transaction mined in block 178333
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 178333
+[1mTimestamp:[0m 1767063528
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.000000000 TAO
+  Next Loan ID:                                3
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              50.000200000 TAO
+    netuid=3 (ALPHA):          1000.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              50.000199500 TAO
+    netuid=3 (ALPHA):           999.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     610.942789900 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            50.000200000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1068.366526755 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):         600.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):        1000.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State After:
+[0;36m[INFO][0m   nextLoanId: 3 → 3
+[0;36m[INFO][0m   userLendBalance[LENDER1][offerId]: 80.00 → 80.00 TAO
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Skipped for negative test (no loan created)
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ Transaction reverted as expected
+[0;36m[INFO][0m 
+Attempting to extract revert reason...
+[0;32m[SUCCESS][0m ✓ Revert reason confirmed: 'exceeds max'
+[0;32m[SUCCESS][0m ✓ nextLoanId unchanged
+[0;32m[SUCCESS][0m ✓ userLendBalance unchanged
+
+================================================================================
+[1mBalance Changes (Should be minimal - gas only)[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.000556570 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m TC08: Exceeds Offer Maximum
+[0;32m[SUCCESS][0m Borrow correctly rejected when cumulative amount exceeds offer max
+[0;32m[SUCCESS][0m No state changes except gas deduction
+[0;32m[SUCCESS][0m Revert reason: 'exceeds max'
+
+[0;96mSummary:[0m
+  - Attempted borrow: 30.00 TAO
+  - Current lend balance: 80.00 TAO
+  - Would result in: 110.00 TAO
+  - Max allowed: 100.00 TAO
+  - Transaction correctly reverted with 'exceeds max'
+  - No state changes (except gas)

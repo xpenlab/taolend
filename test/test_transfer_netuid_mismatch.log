@@ -1,0 +1,316 @@
+
+================================================================================
+[1mTest Case TC07: Netuid Mismatch[0m
+================================================================================
+[96mObjective:[0m Verify transfer fails when offer netuid doesn't match loan netuid
+[96mStrategy:[0m Attempt transfer with netuid mismatch
+[96mExpected:[0m Transaction reverts with 'netuid mismatch'
+[96m[INFO][0m 
+Setting up test environment...
+[92m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[96m[INFO][0m Using Loan ID 9 (netuid 3, OPEN state)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[92m[SUCCESS][0m ✓ INITIATOR registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[92m[SUCCESS][0m ✓ Found active loan: Loan ID 9
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Loan Netuid: 3
+[96m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[96m[INFO][0m   Old Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m   Loan Amount: 20.00 TAO
+[96m[INFO][0m   Collateral: 100.00 ALPHA
+[96m[INFO][0m 
+Loading new offer with DIFFERENT netuid...
+[92m[SUCCESS][0m ✓ New offer loaded from file
+[96m[INFO][0m   Offer ID: b'22\xb5\xe5"_\t)\x9e:\xad\xbf-\x93\xf6CQK@\xaf\xf8~\x92\xd4\x9d`p\x04\x9adW\xf2'
+[96m[INFO][0m   Offer Netuid: 2
+[96m[INFO][0m   Daily Rate: 1.0000%
+[96m[INFO][0m   Max Alpha Price: 0.500000000 TAO/ALPHA
+[1m[93m[WARNING][0m ✓ Netuid mismatch confirmed: Loan netuid=3, Offer netuid=2
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[96m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 185789
+[1mTimestamp:[0m 1767153000
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.075791662 TAO
+  Next Loan ID:                               10
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              75.000900000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              75.000899500 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.936374810 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            60.177019447 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     839.990752910 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1073.308032545 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         950.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         800.000000000 ALPHA
+
+  [1mINITIATOR (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.936374810 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            60.177019447 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[96m[INFO][0m 
+Contract State:
+[96m[INFO][0m   protocolFeeAccumulated: 0.075791662 TAO
+[96m[INFO][0m   OLD_LENDER userLendBalance: 20.00 TAO
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[96m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[96m[INFO][0m Reading loan state for loan ID 9...
+[96m[INFO][0m Loan State Before:
+[96m[INFO][0m   Loan Data ID: 9
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Netuid: 3
+[96m[INFO][0m   Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[96m[INFO][0m   Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[96m[INFO][0m   Loan Amount: 20.00 TAO
+[96m[INFO][0m   Collateral: 100.00 ALPHA
+
+================================================================================
+[1mStep 4: Execute transfer()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [91mRevert:[0m 'netuid mismatch'
+  [96mReason:[0m Loan netuid (3) != Offer netuid (2)
+  [96mState Changes:[0m
+    - No state changes (transaction reverts)
+    - Only gas deducted from initiator's EVM TAO
+[96m[INFO][0m 
+Attempting to transfer loan 9...
+[96m[INFO][0m Initiator: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De (registered)
+[96m[INFO][0m New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[96m[INFO][0m Loan netuid: 3, Offer netuid: 2
+[96m[INFO][0m Transaction sent: 0216d6b6ca679bd04c4887038eda8a33d6960d58ea0fd1362058bdfc8d43dd23
+[96m[INFO][0m Transaction mined in block 185790
+[1m[93m[WARNING][0m Transaction reverted (as expected)
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[96m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 185790
+[1mTimestamp:[0m 1767153012
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.075791662 TAO
+  Next Loan ID:                               10
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              75.000900000 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              75.000899500 TAO
+    netuid=2 (ALPHA):             0.000000000 ALPHA
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.935553290 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            60.177019447 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     839.990752910 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1073.308032545 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         950.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         800.000000000 ALPHA
+
+  [1mINITIATOR (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     600.935553290 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            60.177019447 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):         150.000000000 ALPHA
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=2 (ALPHA):           0.000000000 ALPHA
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+[96m[INFO][0m 
+Contract State After:
+[96m[INFO][0m   protocolFeeAccumulated: 0.075791662 → 0.075791662 TAO
+[96m[INFO][0m   OLD_LENDER userLendBalance: 20.00 → 20.00 TAO
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[96m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[96m[INFO][0m Verifying loan 9 state unchanged...
+[96m[INFO][0m Loan State After:
+[96m[INFO][0m   Loan Data ID: 9
+[96m[INFO][0m   State: OPEN
+[96m[INFO][0m   Netuid: 3
+[96m[INFO][0m   Lender: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[92m[SUCCESS][0m ✓ Transaction reverted as expected
+[92m[SUCCESS][0m ✓ Loan state unchanged (OPEN)
+[92m[SUCCESS][0m ✓ Loan Data ID unchanged
+[92m[SUCCESS][0m ✓ Loan netuid unchanged (3)
+[92m[SUCCESS][0m ✓ Lender unchanged
+[92m[SUCCESS][0m ✓ Protocol fee unchanged
+[92m[SUCCESS][0m ✓ OLD_LENDER lend balance unchanged
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mOLD_LENDER (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.000821520 TAO[0m
+    [1mContract Balance Changes:[0m
+
+  [1mINITIATOR (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m        -0.000821520 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[96m[INFO][0m 
+Expected changes:
+[96m[INFO][0m   - INITIATOR EVM TAO: decreased by gas cost only
+[96m[INFO][0m   - All other balances: unchanged
+
+================================================================================
+[1mTest Result[0m
+================================================================================
+[92m[SUCCESS][0m ✓✓✓ TEST PASSED ✓✓✓
+[92m[SUCCESS][0m TC07: Netuid Mismatch
+[92m[SUCCESS][0m Transaction correctly reverted with 'netuid mismatch'
+[92m[SUCCESS][0m All state validations passed
+[92m[SUCCESS][0m No unexpected state changes detected
+
+[96mSummary:[0m
+  - Cannot transfer loan with netuid mismatch
+  - Netuid validation working correctly
+  - Contract state protected from invalid operations
+  - Loan netuid: 3
+  - Offer netuid: 2
+  - Loan state remains: OPEN
+  - Loan Data ID unchanged: 9
+  - Lender unchanged: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De

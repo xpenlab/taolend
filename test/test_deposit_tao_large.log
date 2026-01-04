@@ -1,0 +1,214 @@
+
+================================================================================
+[1mTest Case TC02: depositTao() - Large Deposit[0m
+================================================================================
+[0;96mObjective:[0m Verify depositTao works correctly with large deposit amount
+[0;96mStrategy:[0m Deposit 100 TAO and verify state changes
+[0;96mExpected:[0m Transaction succeeds, balances update correctly
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;36m[INFO][0m 
+Test Parameters:
+[0;36m[INFO][0m   Registered User: LENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De)
+[0;36m[INFO][0m   Deposit Amount: 100.00 TAO (LARGE)
+
+================================================================================
+[1mStep 0: Verify Setup Conditions[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ LENDER1 registered: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De
+[0;32m[SUCCESS][0m ✓ Deposits not paused
+[0;32m[SUCCESS][0m ✓ User has sufficient EVM TAO: 590.8897 TAO
+
+================================================================================
+[1mStep 1: Read Initial Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing initial state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 199833
+[1mTimestamp:[0m 1767321528
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              60.576467966 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              60.576467466 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     590.889739420 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):            45.980748935 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State:
+[0;36m[INFO][0m   protocolFeeAccumulated: 0.133795624 TAO
+[0;36m[INFO][0m   subnetAlphaBalance[0]: 60.58 TAO
+
+================================================================================
+[1mStep 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 1
+
+================================================================================
+[1mStep 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - deposit operations do not involve loans
+
+================================================================================
+[1mStep 4: Execute depositTao()[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;32mSuccess:[0m Transaction succeeds
+  [0;96mState Changes:[0m
+    - User's contract balance (netuid=0): +100.00 TAO
+    - Contract's subnetAlphaBalance[0]: +100.00 TAO
+    - User's EVM TAO: -100.00 TAO (+ gas)
+
+[0;36m[INFO][0m Depositing 100.00 TAO...
+[0;36m[INFO][0m User: 0x951C84C6791F3a3959462A4DF624DfB5F70bE6De (LENDER1, registered)
+[0;36m[INFO][0m Transaction sent: 7b0f172411a1ed60f26d8a2ed2dfc1fef07fa7ab2f9298f73161abbd8165659a
+[0;36m[INFO][0m Transaction mined in block 199834
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+
+================================================================================
+[1mStep 5: Read Final Contract State[0m
+================================================================================
+[0;36m[INFO][0m Capturing final state snapshot...
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 199834
+[1mTimestamp:[0m 1767321540
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.133795624 TAO
+  Next Loan ID:                               15
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):             160.576467966 TAO
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):             160.576467466 TAO
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:                     490.888689300 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):           145.980748935 TAO
+    [1m[0;35mOn-chain Staking:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Contract State After:
+[0;36m[INFO][0m   protocolFeeAccumulated: 0.133795624 → 0.133795624 TAO
+[0;36m[INFO][0m   subnetAlphaBalance[0]: 60.58 → 160.58 TAO
+
+================================================================================
+[1mStep 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Already captured by BalanceChecker in Step 5
+
+================================================================================
+[1mStep 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m N/A - deposit operations do not involve loans
+
+================================================================================
+[1mStep 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Verifying test expectations...
+[0;32m[SUCCESS][0m ✓ Transaction succeeded
+[0;32m[SUCCESS][0m ✓ Protocol fee unchanged
+[0;32m[SUCCESS][0m ✓ Subnet balance increased by 100.00 TAO
+[0;32m[SUCCESS][0m ✓ User contract balance increased by 100.00 TAO
+[0;32m[SUCCESS][0m ✓ User EVM TAO decreased correctly
+
+================================================================================
+[1mBalance Changes[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+    netuid=0 (TAO):      [0;32m+       100.000000000 TAO[0m
+
+  [1mOn-chain Staking Changes:[0m
+    netuid=0 (TAO):      [0;32m+       100.000000000 TAO[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mLENDER1 (0x951C84C6791F3a3959462A4DF624DfB5F70bE6De):[0m
+    EVM Balance:              [0;31m      -100.001050120 TAO[0m
+    [1mContract Balance Changes:[0m
+      netuid=0 (TAO):    [0;32m+       100.000000000 TAO[0m
+
+[1m[0;96m====================================================================================================[0m
+
+[0;36m[INFO][0m 
+Expected changes:
+[0;36m[INFO][0m   - LENDER1 EVM TAO: -100.00 TAO (+ gas)
+[0;36m[INFO][0m   - LENDER1 Contract Balance (netuid=0): +100.00 TAO
+[0;36m[INFO][0m   - Contract subnetAlphaBalance[0]: +100.00 TAO
+
+================================================================================
+[1mFINAL RESULT[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓✓✓ TC02 TEST PASSED ✓✓✓
+[0;32m[SUCCESS][0m depositTao() executed successfully with large amount
+[0;32m[SUCCESS][0m All state validations passed
+[0;32m[SUCCESS][0m All balances updated correctly
+
+[0;96mSummary:[0m
+  - Deposited: 100.00 TAO (LARGE)
+  - User contract balance: 45.98 → 145.98 TAO
+  - Contract subnet balance: 60.58 → 160.58 TAO
+  - Protocol fee unchanged: 0.133795624 TAO
+  - Gas used: 105012 units

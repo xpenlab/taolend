@@ -1,0 +1,215 @@
+
+================================================================================
+[1mTest Case TC10: Low Lender TAO[0m
+================================================================================
+[0;96mObjective:[0m Verify refinance fails when new lender has insufficient TAO balance
+[0;96mStrategy:[0m Withdraw lender's TAO to make balance insufficient, then attempt refinance
+[0;96mExpected:[0m Transaction reverts with 'low lender tao'
+
+[0;36m[INFO][0m Setting up test environment...
+[0;32m[SUCCESS][0m Connected to Bittensor EVM (Chain ID: 42)
+[0;32m[SUCCESS][0m BORROWER1 and LENDER2 are registered
+[0;36m[INFO][0m Finding active loan for BORROWER1...
+[0;32m[SUCCESS][0m Found active loan: ID=12, netuid=3
+[0;36m[INFO][0m   Collateral: 850.00 ALPHA, Loan: 15.00 TAO
+[0;36m[INFO][0m NEW_LENDER current TAO balance: 25.00 TAO
+[0;36m[INFO][0m Withdrawing 17.50 TAO from NEW_LENDER to make balance insufficient...
+[0;32m[SUCCESS][0m ✓ Withdrew 17.50 TAO
+[1;33m[WARNING][0m NEW_LENDER TAO balance: 7.50 TAO (INSUFFICIENT for 15.00 TAO loan)
+[0;36m[INFO][0m Creating offer for NEW_LENDER...
+[0;32m[SUCCESS][0m Created offer: offerId=b'\xe6\xab\xfc\x12\xf6u_\x8b\xb5\xef\xa1\xdf\xf3v\x86z\xb4\xaf\xe0\x7f\xcex`k\xb6\xdeu\xddI\x9du\xe9', netuid=3
+[0;36m[INFO][0m Refinance amount: 15.00 TAO
+
+================================================================================
+[1mSTEP 1: Read Initial Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 188807
+[1mTimestamp:[0m 1767189216
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.085303354 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              32.496929848 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              32.496929348 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.287537975 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     832.472525412 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             7.500000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 2: Read Initial Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 3: Read Initial Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 12
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m Loan Netuid: 3
+[0;36m[INFO][0m State: 0 (OPEN)
+[0;36m[INFO][0m Loan Amount: 15.00 TAO
+[0;36m[INFO][0m Collateral: 850.00 ALPHA
+
+================================================================================
+[1mSTEP 4: Execute Test Operation - Refinance[0m
+================================================================================
+
+[1mExpected Result:[0m
+  [0;31m✗ Revert:[0m 'low lender tao'
+  [0;96mReason:[0m NEW_LENDER TAO balance (7.50 TAO) < Loan amount (15.00 TAO)
+  [0;96mState Changes:[0m
+    - No state changes (transaction reverts)
+    - Only gas deducted from borrower's EVM TAO
+[0;36m[INFO][0m 
+Attempting to refinance loan 12...
+[0;36m[INFO][0m Borrower: 0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B
+[0;36m[INFO][0m New Lender: 0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736
+[1;33m[WARNING][0m New Lender TAO: 7.50 TAO (INSUFFICIENT)
+[0;36m[INFO][0m Required TAO: 15.00 TAO
+[0;32m[SUCCESS][0m ✓ Gas estimation failed (expected): 'low lender tao'
+[0;36m[INFO][0m 
+Transaction sent: c1db8a26f19c8f6bd3d580a419e3292dd487837538e5d6f6f2cbb513fcd69844
+[0;36m[INFO][0m Transaction mined in block 188808
+
+================================================================================
+[1mSTEP 5: Read Final Contract State[0m
+================================================================================
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Snapshot[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Number:[0m 188808
+[1mTimestamp:[0m 1767189228
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+  EVM Balance:                       0.000000000 TAO
+  Protocol Fee Accumulated:          0.085303354 TAO
+  Next Loan ID:                               13
+
+  [1mInternal Accounting (subnetAlphaBalance):[0m
+    netuid=0 (TAO):              32.496929848 TAO
+    netuid=3 (ALPHA):          1200.000000000 ALPHA
+
+  [1mOn-chain Staking:[0m
+    netuid=0 (TAO):              32.496929348 TAO
+    netuid=3 (ALPHA):          1199.999999999 ALPHA
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balances:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:                    1123.286314955 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             4.748655557 TAO
+      netuid=3 (ALPHA):          20.000000000 ALPHA
+
+  [1mNEW_LENDER (0x398Cfb5e7B5b4CFde9D16fAa10b9b735b37eC736):[0m
+    EVM Balance:                     832.472525412 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             7.500000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+  [1mCONTRACT (0x33C9c122eb602c47d6c1f1f4096550ff5d3DeDDC):[0m
+    EVM Balance:                       0.000000000 TAO
+    [1mContract Balances:[0m
+      netuid=0 (TAO):             0.000000000 TAO
+      netuid=3 (ALPHA):           0.000000000 ALPHA
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mSTEP 6: Read Final Account Balances[0m
+================================================================================
+[0;36m[INFO][0m Account balances captured in snapshot above
+
+================================================================================
+[1mSTEP 7: Read Final Loan State[0m
+================================================================================
+[0;36m[INFO][0m Loan ID: 12
+[0;36m[INFO][0m State: 0 (OPEN)
+[0;36m[INFO][0m Loan Amount: 15.00 TAO
+
+================================================================================
+[1mSTEP 8: Compare and Verify[0m
+================================================================================
+[0;36m[INFO][0m Transaction status: 0
+[0;32m[SUCCESS][0m ✓ Transaction REVERTED as expected
+[0;32m[SUCCESS][0m ✓ Test PASSED: Refinance correctly rejected insufficient lender TAO balance
+[0;36m[INFO][0m Verifying no state changes...
+[0;32m[SUCCESS][0m ✓ Loan state unchanged (OPEN)
+[0;32m[SUCCESS][0m ✓ Loan data ID unchanged
+[0;36m[INFO][0m Balance differences:
+
+[1m[0;96m====================================================================================================[0m
+[1m[0;96mBalance Changes[0m
+[1m[0;96m====================================================================================================[0m
+[1mBlock Diff:[0m 1
+[1mTime Diff:[0m 12 seconds
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mContract State Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mInternal Accounting Changes:[0m
+
+  [1mOn-chain Staking Changes:[0m
+
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[1mUser Balance Changes:[0m
+[1m────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+  [1mBORROWER1 (0xbc4FEFF4FF31416E58aa04339D8e24DfE13BA90B):[0m
+    EVM Balance:              [0;31m        -0.001223020 TAO[0m
+    [1mContract Balance Changes:[0m
+
+[1m[0;96m====================================================================================================[0m
+
+
+================================================================================
+[1mTEST SUMMARY[0m
+================================================================================
+[0;32m[SUCCESS][0m ✓ TC10 PASSED: Refinance correctly rejects insufficient lender TAO balance
+[0;36m[INFO][0m Validation tested: Lender balance check (require userAlphaBalance[lender][0] >= newLoanAmount)
+[0;36m[INFO][0m Error message: 'low lender tao'
+[0;36m[INFO][0m Lender TAO balance: 7.50 TAO
+[0;36m[INFO][0m Required TAO: 15.00 TAO
+[0;36m[INFO][0m All state unchanged (except gas deduction)

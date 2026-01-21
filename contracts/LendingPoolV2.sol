@@ -625,11 +625,11 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
         uint256 rao = msg.value / 1e9; // Convert EVM TAO (18 decimals) to RAO (9 decimals)
         require(rao > 0, "zero amount");
 
-        _stakeTao(rao);
-        _increaseUserAlphaBalance(msg.sender, 0, rao);
-        _increaseSubnetAlphaBalance(0, rao);
+        uint256 stakedAmount = _stakeTao(rao);
+        _increaseUserAlphaBalance(msg.sender, 0, stakedAmount);
+        _increaseSubnetAlphaBalance(0, stakedAmount);
 
-        emit DepositTao(msg.sender, rao);
+        emit DepositTao(msg.sender, stakedAmount);
     }
 
     /**
@@ -659,11 +659,11 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
     {
         _requireSubnetActive(_netuid);
 
-        _depositAlpha(_netuid, _amount, _delegateHotkey);
-        _increaseUserAlphaBalance(msg.sender, _netuid, _amount);
-        _increaseSubnetAlphaBalance(_netuid, _amount);
+        uint256 stakedAmount = _depositAlpha(_netuid, _amount, _delegateHotkey);
+        _increaseUserAlphaBalance(msg.sender, _netuid, stakedAmount);
+        _increaseSubnetAlphaBalance(_netuid, stakedAmount);
 
-        emit DepositAlpha(msg.sender, _netuid, _amount, _delegateHotkey, msg.sender);
+        emit DepositAlpha(msg.sender, _netuid, stakedAmount, _delegateHotkey, msg.sender);
     }
 
     /**
@@ -993,7 +993,9 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
         payable(_to).transfer(_amountRao * 1e9); // Convert RAO to EVM TAO
     }
 
-    function _depositAlpha(uint16 _netuid, uint256 _amount, bytes32 _delegateHotkey) internal {
+    function _depositAlpha(uint16 _netuid, uint256 _amount, bytes32 _delegateHotkey) internal returns (uint256) {
+        uint256 beforeStake = _getContractStake(_netuid);
+
         bytes memory transferData = abi.encodeWithSelector(
             IStaking.transferStake.selector,
             CONTRACT_COLDKEY,
@@ -1005,7 +1007,6 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
         (bool transferSuccess, ) = address(staking).delegatecall(transferData);
         require(transferSuccess, "transfer failed");
 
-        // pool pay the fee to move stake to DELEGATE_HOTKEY
         if (_delegateHotkey != DELEGATE_HOTKEY) {
             bytes memory moveData = abi.encodeWithSelector(
                 IStaking.moveStake.selector,
@@ -1018,9 +1019,17 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
             (bool moveSuccess, ) = address(staking).call(moveData);
             require(moveSuccess, "move failed");
         }
+
+        uint256 afterStake = _getContractStake(_netuid);
+        require(afterStake > beforeStake && afterStake - beforeStake <= _amount, "insufficient deposit");
+
+        return afterStake - beforeStake;
     }
 
     function _withdrawAlpha(uint16 _netuid, uint256 _amount, bytes32 _userColdkey) internal {
+        uint256 beforeStake = _getContractStake(_netuid);
+        require(beforeStake >= _amount, "low stake");
+
         bytes memory data = abi.encodeWithSelector(
             IStaking.transferStake.selector,
             _userColdkey,
@@ -1031,9 +1040,14 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
         );
         (bool success, ) = address(staking).call(data);
         require(success, "transfer failed");
+
+        uint256 afterStake = _getContractStake(_netuid);
+        require(afterStake >= beforeStake - _amount, "insufficient deposit");
     }
 
-    function _stakeTao(uint256 _amountRao) internal {
+    function _stakeTao(uint256 _amountRao) internal returns (uint256) {
+        uint256 beforeStake = _getContractStake(0);
+
         bytes memory data = abi.encodeWithSelector(
             IStaking.addStake.selector,
             DELEGATE_HOTKEY,
@@ -1042,9 +1056,17 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
         );
         (bool success, ) = address(staking).call(data);
         require(success, "stake failed");
+
+        uint256 afterStake = _getContractStake(0);
+        require(afterStake > beforeStake && afterStake - beforeStake <= _amountRao, "insufficient deposit");
+
+        return afterStake - beforeStake;
     }
 
     function _unstakeTao(uint256 _amountRao) internal {
+        uint256 beforeStake = _getContractStake(0);
+        require(beforeStake >= _amountRao, "low stake");
+
         bytes memory data = abi.encodeWithSelector(
             IStaking.removeStake.selector,
             DELEGATE_HOTKEY,
@@ -1053,6 +1075,18 @@ contract LendingPoolV2 is Ownable, ReentrancyGuard {
         );
         (bool success, ) = address(staking).call(data);
         require(success, "unstake failed");
+
+        uint256 afterStake = _getContractStake(0);
+        require(afterStake >= beforeStake - _amountRao, "insufficient deposit");
+    }
+
+    function _getContractStake(uint256 netuid) internal view returns (uint256) {
+        return
+            staking.getStake(
+                DELEGATE_HOTKEY,
+                CONTRACT_COLDKEY,
+                netuid
+            );
     }
 
     receive() external payable {}

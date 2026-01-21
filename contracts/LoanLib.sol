@@ -110,9 +110,10 @@ library LoanLib {
     function verifyOfferSignature(Offer memory offer) internal pure returns (bool) {
         bytes32 offerHash = calculateOfferHash(offer);
         bytes32 ethSignedMessageHash = offerHash.toEthSignedMessageHash();
-        address recoveredSigner = ethSignedMessageHash.recover(offer.signature);
+        (address recoveredSigner, ,) = ethSignedMessageHash.tryRecover(offer.signature);
         return recoveredSigner == offer.lender;
     }
 }
+
 
 

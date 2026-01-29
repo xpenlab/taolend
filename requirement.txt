@@ -1,2 +1,2 @@
-bittensor
-requests
+bittensor==10.0.1
+requests==2.32.5

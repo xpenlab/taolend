@@ -1,220 +1,374 @@
 <div align="center">
 
-# [Tao Lend](https://taolend.io)
+# TaoLend
+
+**A Decentralized TAO Lending Protocol on Bittensor**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Solidity](https://img.shields.io/badge/Solidity-^0.8.24-orange.svg)](https://soliditylang.org/)
+[![Subnet](https://img.shields.io/badge/Bittensor-SN116-purple.svg)](https://taostats.io/subnets/netuid-116/)
 
 </div>
 
-# A TAO Lending Protocol in Bittensor
+---
 
-**TaoLend** is a decentralized lending protocol for the Bittensor (\$TAO) ecosystem. It allows users to lend TAO with confidence while borrowers secure loans using subnet ALPHA as collateral. By unlocking TAO liquidity and keeping ALPHA staked within subnets, TaoLend improves both capital efficiency and network security.liquidity and keeping ALPHA staked within subnets, TaoLend improves both capital efficiency and network security.
+## 📖 Overview
+
+TaoLend is a decentralized lending protocol for the Bittensor ($TAO) ecosystem. It allows users to lend TAO with confidence while borrowers secure loans using subnet ALPHA as collateral. By unlocking TAO liquidity and keeping ALPHA staked within subnets, TaoLend improves both capital efficiency and network security.
 
 Our vision is to advance the TAO-EVM ecosystem, creating deeper integration between Bittensor and the broader decentralized finance landscape, and ultimately bringing greater value to the entire Bittensor network.
 
+---
+
 ## 🚀 Features
 
-* **Point-to-Point**: Lenders and borrowers interact directly to establish loans.
-* **Flexible Interest**: Lenders define interest rates according to market conditions.
-* **Permissionless**: Lenders and borrowers complete transactions with the contract without requiring third-party approval.
-* **Bittensor & EVM Integration**: Seamlessly interact with TAO subnets and the EVM ecosystem.
-* **Incentivized Participation**: Earn rewards for lending and borrowing TAO, increasing TAO liquidity while keeping ALPHA locked across subnets.
+- **Point-to-Point Lending** - Lenders and borrowers interact directly to establish loans without intermediaries.
+
+- **Flexible Interest Rates** - Lenders define interest rates according to market conditions, creating a competitive lending marketplace.
+
+- **Permissionless** - Lenders and borrowers complete transactions with the smart contract without requiring third-party approval.
+
+- **Bittensor & EVM Integration** - Seamlessly interact with TAO subnets and the EVM ecosystem through precompiled contracts.
+
+- **Incentivized Participation** - Earn rewards for lending and borrowing TAO, increasing TAO liquidity while keeping ALPHA locked across subnets.
 
 ---
 
-## 🛠️ Getting Started (Active in Phase 1)
+## ⛏️ Mining Rewards
+
+TaoLend incentivizes actual trading activity by distributing ALPHA rewards to market participants:
+
+### Reward Distribution
+
+- **20% to TAO Depositors**: Users who deposit TAO into the protocol to provide offer liquidity
+- **80% to Active Lenders**: Users who actively provide loans to borrowers (based on actual protocol fees earned)
+
+### Participating
+
+To earn mining rewards:
+1. **Deposit TAO**: Visit [www.taolend.io](https://www.taolend.io) and deposit TAO to create loan offers
+2. **Create Offers**: Lenders create competitive loan offers
+3. **Earn Rewards**: Automatically receive ALPHA rewards based on your contribution
+
+**No Command Line Tools Required** - All operations available through the web interface at [www.taolend.io](https://www.taolend.io).
+
+### Reward Distribution Process
+
+**ALPHA Distribution Flow**:
+
+1. **Miner Registration**
+   - Subnet owner registers multiple miners on Subnet 116
+   - All undistributed ALPHA is allocated to these registered miners
+
+2. **Daily Distribution Schedule**
+   - Distribution executes **8 hours after the end of each day** (UTC+8, 08:00 AM)
+   - Calculates rewards for the previous day's activity (00:00 - 23:59 UTC)
+   - Example: January 15 rewards distributed on January 16 at 08:00 AM
+
+3. **Allocation Calculation**
+   - **Deposit rewards (20%)**: Based on historical TAO deposit balances
+   - **Lending rewards (80%)**: Based on actual protocol fees earned
+   - Excess ALPHA (after deposit + lending + gas) is **permanently burned**
+
+4. **ALPHA Distribution to Users**
+   - All allocated ALPHA is deposited into the **LendingPool contract**
+   - ALPHA is credited to users' contract balances (`userAlphaBalance[address][netuid]`)
+   - Users can withdraw anytime using the `withdrawAlpha()` function
+
+5. **Minimum Transfer Threshold**
+   - **Threshold**: 10 ALPHA per address
+   - If an allocation < 10 ALPHA, it is **not transferred** immediately
+   - Allocations accumulate in the database until total ≥ 10 ALPHA
+   - Once accumulated amount ≥ 10 ALPHA, all pending rewards are deposited in a single transaction
+
+**Withdrawal**:
+- Visit [www.taolend.io](https://www.taolend.io) to withdraw your earned ALPHA
+- Or use the contract's `withdrawAlpha()` function directly
+- No minimum withdrawal amount; withdraw anytime
+
+---
+
+## 🔍 Validator Setup
 
 ### Prerequisites
 
-* \$TAO and subnet \$ALPHA in a compatible wallet (e.g., Bittensor CLI wallet).
-* Familiarity with Bittensor EVM and transferring funds between SS58 and EVM H160 addresses.
-* Basic understanding of EVM contracts and Bittensor subnets.
+Install NodeJS (latest LTS version) and PM2:
 
-### Installation
-
-Install NodeJS and PM2
 ```bash
+# Install build essentials
 sudo apt install build-essential libssl-dev git
+
+# Install NVM (Node Version Manager)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 source ~/.bashrc
-nvm install v20.13.1
-nvm use v20.13.1
+
+# Install NodeJS (latest LTS version)
+nvm install --lts
+nvm use --lts
+
+# Install TypeScript and PM2
 npm install -g typescript ts-node pm2
 ```
 
-Download code and install dependency
+### Installation
+
+Download code and install dependencies:
+
 ```bash
+# Clone repository
 git clone https://github.com/xpenlab/taolend
 cd taolend
-npm install
+
+# Install Python dependencies
 pip install -r requirement.txt
 ```
 
+### Running Validator
 
-### Miners (Command-line mode for Phase 1)
+Start validator with auto-upgrade:
 
-1. **Register a miner on a subnet**
-
-   ```bash
-   btcli subnet register --netuid 116 --wallet.name <your wallet name> --wallet.hotkey <your wallet hotkey>
-   ```
-
-2. **Create an EVM wallet**
-
-   ```bash
-   cp env.example .env
-   ```
-
-   <span style="color:red">Update the ETH_PRIVATE_KEY value in .env with 32 bytes</span>. This generates an EVM wallet address and maps it to a Subtensor SS58 address.
-   **Important**: Keep this private key secure, or you will lose all assets in the wallet. DON'T USE THE DEFAULT KEY !!!
-   Note: The mirror SS58 address does not have a private key, so you cannot control it directly.
-
-   ```bash
-   npx ts-node scripts/cli.ts miner balance
-   ```
-
-   This will display your EVM wallet address, mirror SS58 address, and balances at any time.
-
-3. **Bind miner to EVM wallet**
-
-   ```bash
-   npx ts-node scripts/cli.ts miner bind --hotkey <your miner hotkey>
-   ```
-
-4. **Transfer TAO or ALPHA to the EVM wallet**
-   Transfer TAO or ALPHA to the SS58 address using `btcli` or the Subtensor wallet. The same balance will appear in both the EVM wallet address and the SS58 address.
-   Subsequent actions will be performed using the EVM address.
-
-   ```bash
-   btcli stake transfer --orig-netuid <netuid> --dest-netuid <netuid> --amount <readable amount> --dest <your mirror SS58 address>
-   ```
-
-5. **Deposit TAO/ALPHA to the lending pool**
-
-   ```bash
-   npx ts-node scripts/cli.ts deposit alpha --netuid <alpha netuid> --amount <readable amount> --delegate <the alpha delegated hotkey>
-   npx ts-node scripts/cli.ts deposit tao --amount <readable amount>
-   ```
-
-6. **Withdraw TAO/ALPHA from the lending pool**
-
-   ```bash
-   npx ts-node scripts/cli.ts withdraw alpha --netuid <alpha netuid> --amount <readable amount>
-   npx ts-node scripts/cli.ts withdraw tao --amount <readable amount>
-   ```
-
-7. **Transfer TAO/ALPHA out of the EVM wallet**
-   Since you cannot control the mirror SS58 address, assets should be transferred out of the EVM address using the EVM precompile contract.
-
-   ```bash
-   npx ts-node scripts/cli.ts transfer alpha --netuid <alpha netuid> --amount <readable amount> --dest <destination SS58 coldkey address>
-   npx ts-node scripts/cli.ts transfer tao --amount <readable amount> --dest <destination SS58 coldkey address>
-   ```
-
-**GUI mode** is available at [taolend.io](https://taolend.io).
-
-### Validators
-
-  Start validator with auto upgrade
-   ```bash
-   pm2 start --name sn116-auto-upgrade python3 -- start_validator.py --wallet.name <your wallet1> --wallet.hotkey <your hotkey>
-   ```
-
----
-
-## 💡 Incentives
-
-In Phase 1, Bittensor’s decentralized network rewards developers and users who contribute value.
-
-The miner weight is calculated as:
-
-```
-          SUM(miner’s deposit amount * subnet alpha price * subnet coefficient)
-weight = ---------------------------------------------------------------------
-          SUM(all subnet amounts * subnet alpha price * subnet coefficient)
+```bash
+pm2 start --name sn116-auto-upgrade python3 -- start_validator.py \
+  --wallet.name <your_wallet_name> \
+  --wallet.hotkey <your_hotkey>
 ```
 
-* **Subnet coefficient**: Defined by the subnet owner to incentivize specific subnet deposits.
-* **Alpha price**: Determined as the average ALPHA price across the last three blocks.
+**Parameters**:
+- `--wallet.name`: Your Bittensor wallet name
+- `--wallet.hotkey`: Your validator hotkey
+
+**Monitoring**:
+```bash
+# View logs
+pm2 logs sn116-auto-upgrade
+
+# Check status
+pm2 status
+```
 
 ---
 
-## 🗺️ Roadmap Phases
+## ⚖️ Weight Allocation Algorithm
 
-### Phase 1. 💦 Lending Pool Bootstrap
+### Overview
 
-In the initial phase, a shared lending pool is established to bootstrap liquidity. Both miners and participants are encouraged to contribute by depositing TAO and ALPHA into the smart contract pool.
+Validators distribute weights to miners (lenders and depositors) based on their contribution to the protocol's trading activity.
 
-* **Dual-asset contribution**: Miners can deposit TAO and ALPHA into the contract. In return, they receive rewards, incentivizing early participation and liquidity depth.
-* **Flexible withdrawal**: Deposited TAO and ALPHA can be withdrawn at any time without lock-up, offering participants flexibility and reduced risk.
-* **Subnet reward conversion**: All TAO and ALPHA rewards generated in the contract are automatically swapped into Subnet 116 ALPHA, aligning incentives with subnet growth and strengthening the Subnet 116 ecosystem.
+### Key Principles
 
-This phase focuses on **liquidity bootstrapping** and **reward alignment**, laying the foundation for the P2P lending system in Phase 2.
+1. **Dual-Cap Protection**: Uses minimum of fixed pool cap and TAO emission cap
+2. **Proportional Distribution**: Rewards proportional to deposits and protocol fees earned
+3. **Priority-Based Allocation**: Deposit > Loan > Gas > Burn (ensures user rewards are always guaranteed)
+4. **Anti-Manipulation**: Historical balance sampling prevents gaming deposit rewards
+5. **Fee-Based Incentives**: Lending rewards calculated from actual protocol fees earned (30% of interest)
+
+### Allocation Formula
+
+**Total Allocatable ALPHA**:
+```
+miner_allocatable_alpha = min(
+  EPOCH_DAILY_ALPHA × ALLOCATION_RATE × 0.41,  // Fixed pool cap
+  total_emission_tao × 0.41 × ALLOCATION_RATE / alpha_price  // TAO emission cap
+)
+```
+
+**Split into Deposits and Lending**:
+```
+deposit_max_alpha = miner_allocatable_alpha × 0.20  // 20% to depositors
+
+// Lending: Calculate from actual protocol fees earned with multiplier
+lending_alpha_from_fees = (total_protocol_fees × 1.5) / SN116_alpha_price
+lending_actual_alpha = min(
+  miner_allocatable_alpha × 0.80,    // 80% cap from allocatable pool
+  lending_alpha_from_fees             // Total ALPHA calculated from fees
+)
+```
+
+**Lending Weight Calculation (80%)**:
+
+Total ALPHA available from protocol fees:
+```
+// Step 1: Sum all protocol fees from repaid loans (in TAO)
+total_protocol_fees = sum(loan.protocol_fee for all repaid loans)
+
+// Step 2: Apply lender fee multiplier and convert to ALPHA
+lending_alpha_from_fees = (total_protocol_fees × LENDER_FEE_MULTIPLIER) / SN116_alpha_price
+                        = (total_protocol_fees × 1.5) / SN116_alpha_price
+
+Where:
+- total_protocol_fees: Sum of all protocol fees (in TAO)
+- LENDER_FEE_MULTIPLIER: 1.5x multiplier to incentivize active lending
+- SN116_alpha_price: Current ALPHA price on Subnet 116 (in TAO/ALPHA)
+```
+
+Apply lending cap:
+```
+lending_actual_alpha = min(
+  miner_allocatable_alpha × 0.80,    // 80% cap
+  lending_alpha_from_fees             // Available from fees × 1.5
+)
+```
+
+Each lender receives proportional allocation:
+```
+lender_alpha_reward = lending_actual_alpha × (lender_protocol_fee / total_protocol_fees)
+
+Where:
+- lender_protocol_fee: Protocol fees earned by this lender's loans (in TAO)
+- total_protocol_fees: Total protocol fees from all loans (in TAO)
+```
+
+**Note**: The 1.5x multiplier means lenders can receive up to 50% more ALPHA than the TAO value of their protocol fees would suggest, incentivizing active lending over passive deposits.
+
+**Deposit Weight Calculation (20%) - Anti-Manipulation**:
+
+Historical balance sampling to prevent gaming:
+```
+1. Sample blocks every 360 blocks (~1 hour) throughout the epoch
+2. For each user, query on-chain balance at all sampled blocks
+3. Take MINIMUM balance across all samples as effective balance
+4. Calculate proportional allocation:
+
+user_deposit_reward = deposit_max_alpha × (user_min_balance / total_min_balances)
+```
+
+**Why minimum balance?**
+- Prevents users from temporarily inflating deposits during allocation
+- Requires consistent deposits throughout the entire epoch
+- Example: Deposit 10 TAO for 23 hours + 1000 TAO for 1 hour → Effective balance = 10 TAO
+
+**Priority-Based Allocation (Gas & Burn)**:
+```
+// After user allocations (deposit + lending)
+remaining = miner_allocatable_alpha - deposit_max_alpha - lending_actual_alpha
+
+if remaining > 0:
+    gas_fee = min(calculated_gas_fee, remaining)
+    burn_alpha = remaining - gas_fee
+else:
+    gas_fee = 0
+    burn_alpha = 0
+
+// Priority ensures user rewards are never reduced due to gas/burn shortfall
+```
+
+### Constants
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| `EPOCH_DAILY_ALPHA` | 7,200 ALPHA | Fixed daily pool |
+| `ALLOCATION_RATE` | 20-50% (configurable) | Percentage of pool distributed |
+| `MINER_EMISSION_RATE` | 41% | Miner's share of TAO emission |
+| `LENDING_ALLOCATION_RATE` | 80% | Lending share of miner allocation |
+| `DEPOSIT_ALLOCATION_RATE` | 20% | Deposit share of miner allocation |
+| `PROTOCOL_FEE_RATE` | 30% | Platform fee (30% of interest) |
+| `LENDER_FEE_MULTIPLIER` | 1.5x | Multiplier for lending rewards |
+| `BALANCE_SAMPLE_INTERVAL` | 360 blocks | Balance sampling interval (~1 hour) |
+
+### Example Calculation
+
+**Scenario**: Daily allocation with 3 loans
+
+**Step 1: Calculate allocatable ALPHA**
+```
+miner_allocatable_alpha = 1476 ALPHA  (from dual-cap formula)
+deposit_max_alpha = 1476 × 0.20 = 295.2 ALPHA
+lending_cap = 1476 × 0.80 = 1180.8 ALPHA
+```
+
+**Step 2: Calculate lending ALPHA from fees**
+```
+Loan A: protocol_fee = 10 TAO
+Loan B: protocol_fee = 5 TAO
+Loan C: protocol_fee = 3 TAO
+
+Total protocol fees = 10 + 5 + 3 = 18 TAO
+
+ALPHA price = 0.01 TAO/ALPHA
+
+lending_alpha_from_fees = (18 × 1.5) / 0.01 = 27 / 0.01 = 2700 ALPHA
+```
+
+**Step 3: Apply lending cap**
+```
+lending_actual_alpha = min(1180.8, 2700) = 1180.8 ALPHA
+```
+
+**Step 4: Distribute to lenders proportionally**
+```
+Lender A: 1180.8 × (10/18) = 656.0 ALPHA
+Lender B: 1180.8 × (5/18) = 328.0 ALPHA
+Lender C: 1180.8 × (3/18) = 196.8 ALPHA
+
+Total distributed: 656.0 + 328.0 + 196.8 = 1180.8 ALPHA ✓
+```
+
+### Benefits
+
+- **Fair Distribution**: Proportional to actual trading activity
+- **Sustainable**: Dual-cap prevents over-allocation
+- **Secure**: Historical sampling prevents deposit manipulation
+- **Guaranteed Rewards**: Priority system ensures user allocations succeed
+- **Fee-Based**: Rewards tied to real protocol fees (30% of interest)
+- **Incentivized Lending**: 1.5x multiplier rewards active lending
+- **Deflationary**: Excess ALPHA burned
 
 ---
 
-### Phase 2. 💦 Point-to-Point Protocol Setup
+## 📜 Smart Contract
 
-In this phase, we introduce a **peer-to-peer (P2P) lending protocol**, where users use ALPHA as collateral to borrow TAO directly from lenders. The process is governed by smart contracts, ensuring trustless execution without centralized risk.
+### [Contract Details](CONTRACT.md)
 
-#### Lender
+**Deployed Addresses**:
+- **Contract Proxy**: `0x4AF585f3707beAd92DDB868f8Dd3905cada57f2f`
+  - SS58: `5HW9AL6KxJ4sH4UBvk1p19sj4xQGH9jBGrSJS9tBPU3yyW9d`
+- **Contract Implementation**: `0x626b1b99aEc1Fdf94506F14F20ec8334Cfe080EA`
+- **Manager**: `0x55C4F38318485c93418a14fa11D1445d43608708`
+- **Miner Coldkey**: `0xFF2C4368C69719388384719cD88925FcE7ee2945`
+  - SS58: `5FG5s8aMSNNkyD3nR9EZt2rt2NtCaepWpyZjZL1NueSURmh1`
+- **Treasury**: `5GXCSaa98gxaSMbP4iW66nMLu9wat825EsY5D2n4TvfWS87A`
 
-* **Deposit TAO to contract wallet**: Lenders deposit TAO into the lending contract wallet to provide liquidity.
-* **Select subnet and define interest**: Lenders choose the subnet and set loan interest rates (e.g., annualized 5% or block-based interest).
-* **Generate a signed offer with expiry**: Lenders generate signed loan offers including loan amount, interest rate, subnet ID, required ALPHA collateral, and loan duration.
+### Contract Architecture
 
-#### Borrower
-
-* **Choose lender**: Borrowers browse on-chain offers and select one that fits their needs.
-* **Accept the offer**: Borrowers accept by depositing ALPHA collateral into the contract.
-* **Receive TAO**: Once collateral is confirmed, the contract automatically transfers TAO to the borrower.
-* **Repay the loan**: Borrowers repay principal plus interest before maturity. After repayment, collateral is released. If default occurs, lenders can claim ALPHA collateral.
-
-#### Loan Cycle
-
-* **Flexible loan cycle**: Borrowers specify a minimum loan duration (e.g., 7–30 days). There is no maximum loan period.
-* **Early repayment**: After the minimum duration, borrowers may repay at any time. Interest accrues daily.
-* **Lender recall option**: After the minimum loan duration, lenders can issue a repayment request, requiring repayment within a fixed period (e.g., 3 days).
-* **Default handling**: If the borrower does not repay within this period, the lender may claim all ALPHA collateral to repay the loan.
+**Core Contracts**:
+- **LendingPoolV2.sol** - Main lending pool contract handling deposits, withdrawals, and P2P lending
+- **LoanLib.sol** - EIP-712 signature verification for loan offers
+- **Staking Interface** - Interfaces with Bittensor's staking precompiled contract
+- **Alpha Interface** - ALPHA price oracle integration
 
 ---
 
-## 💡 Incentives
+## 🤝 Community & Support
 
-**Lender incentives**
-
-* Earn TAO staking rewards without lending.
-* Earn additional interest income from loans.
-* Maintain TAO liquidity without staking directly in subnets.
-* Subnet 116 ALPHA rewards:
-
-  * Depositing TAO provides lower-weight rewards.
-  * Lending TAO via P2P yields higher-weight rewards.
-
-**Borrower incentives**
-
-* Gain TAO liquidity without selling ALPHA holdings.
-* Use borrowed TAO in DeFi or node operations.
-* Subnet 116 ALPHA rewards: borrowing TAO via lending earns higher-weight rewards.
-
-**Network incentives**
-
-* Improve TAO liquidity and overall capital efficiency.
-* Ensure ALPHA remains locked in subnets, preserving stability and security.
+- **Website**: [https://www.taolend.io](https://www.taolend.io)
+- **GitHub**: [github.com/xpenlab/taolend](https://github.com/xpenlab/taolend)
+- **Email**: team@taolend.io
+- **Subnet**: Bittensor SN116
 
 ---
 
-## 🔒 Security
-
-TaoLend places a strong emphasis on protocol and user security. Key security features include:
-
-1. **Audited Smart Contracts**: All core contracts undergo professional security audits to identify and mitigate vulnerabilities before deployment.
-2. **Non-custodial Design**: Users retain full control of their assets at all times; the protocol never takes custody of user funds outside of contract logic.
-3. **Collateralization & Liquidation**: Loans are always over-collateralized with ALPHA, and automated liquidation mechanisms protect lenders from borrower default.
-4. **Permissionless & Transparent**: All transactions and contract logic are fully on-chain and open source, ensuring transparency and verifiability.
-5. **Role Separation & Access Control**: Administrative functions are strictly limited and protected by multi-signature or timelock mechanisms to prevent misuse.
-6. **Continuous Monitoring**: The protocol is subject to ongoing monitoring and community review to quickly address any emerging threats or vulnerabilities.
-
----
 ## 📜 License
 
-TaoLend is MIT licensed. See [LICENSE](LICENSE).
+TaoLend is released under the [MIT License](LICENSE).
 
+---
+
+## ⚠️ Disclaimer
+
+TaoLend is experimental DeFi software. Use at your own risk. Always:
+- Test with small amounts first
+- Understand the risks of lending and borrowing
+- Monitor your positions regularly
+- Verify all transaction parameters
+
+The protocol is provided "as is" without warranties. Users are responsible for their own funds and decisions.
+
+---
+
+<div align="center">
+
+**Built on Bittensor | Powered by TAO**
+
+[Website](https://www.taolend.io) | [GitHub](https://github.com/xpenlab/taolend) | [Subnet 116](https://taostats.io/subnets/netuid-116/)
+
+</div>

@@ -10,7 +10,7 @@ from typing import Union
 from traceback import format_exception
 import requests
 
-__validator_version__ = "1.0.2"
+__validator_version__ = "1.0.3"
 version_split = __validator_version__.split(".")
 __spec_version__ = (
     (1000 * int(version_split[0]))
@@ -38,17 +38,17 @@ def add_validator_args(cls, parser):
 
 def config(cls):
     parser = argparse.ArgumentParser()
-    bt.wallet.add_args(parser)
-    bt.subtensor.add_args(parser)
+    (getattr(bt, "Wallet", None) or bt.wallet).add_args(parser)
+    (getattr(bt, "Subtensor", None) or bt.subtensor).add_args(parser)
+    (getattr(bt, "Axon", None) or bt.axon).add_args(parser)
     bt.logging.add_args(parser)
-    bt.axon.add_args(parser)
     cls.add_args(parser)
-    return bt.config(parser)
+    return (getattr(bt, "Config", None) or bt.config)(parser)
 
 class Validator():
-    subtensor: "bt.subtensor"
-    wallet: "bt.wallet"
-    metagraph: "bt.metagraph"
+    subtensor: None
+    wallet: None
+    metagraph: None
 
     @classmethod
     def config(cls):
@@ -72,8 +72,8 @@ class Validator():
         # These are core Bittensor classes to interact with the network.
         bt.logging.info("Setting up bittensor objects.")
 
-        self.wallet = bt.wallet(config=self.config)
-        self.subtensor = bt.subtensor(config=self.config)
+        self.wallet = (getattr(bt, "Wallet", None) or bt.wallet)(config=self.config)
+        self.subtensor = (getattr(bt, "Subtensor", None) or bt.subtensor)(config=self.config)
         self.metagraph = self.subtensor.metagraph(self.config.netuid)
 
         bt.logging.info(f"Wallet: {self.wallet}")
@@ -163,7 +163,6 @@ class Validator():
                 self.sync()
 
                 self.step += 1
-                time.sleep(300)  # Sleep for 12 seconds (approximate block time).
 
         # If someone intentionally stops the validator, it'll safely terminate operations.
         except KeyboardInterrupt:
@@ -176,6 +175,7 @@ class Validator():
             err_message = ''.join(format_exception(type(err), err, err.__traceback__))
             self.should_exit = True
             self.on_error(err, err_message)
+        time.sleep(300)  # Sleep for 300 seconds.
 
     def on_error(self, error: Exception, error_message: str):
         bt.logging.error(f"Error during validation: {str(error)}")
@@ -231,6 +231,9 @@ class Validator():
             block_number = result.get("block_number")
             if block_number is None or block_number <= self.block - 120:
                 bt.logging.info(f"Warning: Stale weights data from API. block_number={block_number}, current_block={self.block}")
+                if self.block - self.metagraph.last_update[self.uid] < 300:
+                    bt.logging.info(f"last_update={self.metagraph.last_update[self.uid]}, safe to skip set weight")
+                    return
                 uids = [0]
                 weights = [1.0]
             else:
@@ -245,6 +248,9 @@ class Validator():
             weights = [1.0]
 
         if len(uids) == 0 or len(weights) == 0 or len(uids) != len(weights):
+            if self.block - self.metagraph.last_update[self.uid] < 300:
+                bt.logging.info(f"last_update={self.metagraph.last_update[self.uid]}, safe to skip set weight")
+                return
             uids = [0]
             weights = [1.0]
 

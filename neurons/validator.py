@@ -163,6 +163,7 @@ class Validator():
                 self.sync()
 
                 self.step += 1
+                time.sleep(300)  # Sleep for 300 seconds.
 
         # If someone intentionally stops the validator, it'll safely terminate operations.
         except KeyboardInterrupt:

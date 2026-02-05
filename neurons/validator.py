@@ -230,7 +230,7 @@ class Validator():
             resp.raise_for_status()
             result = resp.json()
             block_number = result.get("block_number")
-            if block_number is None or block_number <= self.block - 120:
+            if block_number is None:
                 bt.logging.info(f"Warning: Stale weights data from API. block_number={block_number}, current_block={self.block}")
                 if self.block - self.metagraph.last_update[self.uid] < 300:
                     bt.logging.info(f"last_update={self.metagraph.last_update[self.uid]}, safe to skip set weight")

@@ -32,6 +32,8 @@ Our vision is to advance the TAO-EVM ecosystem, creating deeper integration betw
 
 - **Incentivized Participation** - Earn rewards for lending and borrowing TAO, increasing TAO liquidity while keeping ALPHA locked across subnets.
 
+- **Leverage Operations** - Borrowers can amplify ALPHA positions using `borrowLevel` (leverage with existing ALPHA) or `buyLevel` (leverage-buy ALPHA with TAO), and unwind positions via `repayBySell` (repay by selling collateral).
+
 ---
 
 ## ⛏️ Mining Rewards
@@ -331,10 +333,24 @@ Total distributed: 656.0 + 328.0 + 196.8 = 1180.8 ALPHA ✓
 ### Contract Architecture
 
 **Core Contracts**:
-- **LendingPoolV2.sol** - Main lending pool contract handling deposits, withdrawals, and P2P lending
+- **LendingPoolV2.sol** - Main lending pool contract handling deposits, withdrawals, P2P lending, and leverage operations
 - **LoanLib.sol** - EIP-712 signature verification for loan offers
 - **Staking Interface** - Interfaces with Bittensor's staking precompiled contract
 - **Alpha Interface** - ALPHA price oracle integration
+
+**Key Operations**:
+
+| Function | Type | Description |
+|----------|------|-------------|
+| `borrow` | Borrow | Standard borrow using ALPHA collateral |
+| `borrowLevel` | Leverage | Amplify existing ALPHA position by borrowing TAO to buy more ALPHA |
+| `buyLevel` | Leverage | Use TAO to leveraged-buy ALPHA (TAO collateral → ALPHA position) |
+| `repay` | Repay | Repay loan with TAO from balance |
+| `repayBySell` | Repay | Repay by selling ALPHA collateral, no pre-deposited TAO needed |
+| `refinance` | Refinance | Switch to a new offer atomically |
+| `collect` | Lender | Request repayment from borrower |
+| `transfer` | Lender | Sell loan position to another lender |
+| `seize` | Lender | Claim collateral after grace period |
 
 ---
 

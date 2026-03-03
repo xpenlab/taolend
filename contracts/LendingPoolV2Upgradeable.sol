@@ -64,7 +64,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
     mapping (address => bytes32) public userColdkey; // address => SS58 coldkey, which is converted from address
 
     // v2 add
-    mapping (uint16 => uint16) public subnetLevels; // netuid => collateralization level (e.g. 150 means 150%)
+    mapping (uint16 => uint16) public subnetMaxLevels; // netuid => max level (e.g. 150 means 150%)
 
     event RegisterUser(
         address indexed user,
@@ -131,22 +131,11 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         uint256 block,
         uint256 collateralAmount,
         uint256 loanAmount,
-        uint256 dailyInterestRate
+        uint256 dailyInterestRate,
+        uint8 loanType // 0 for normal borrow, 1 for level borrow, 2 for buy level
     );
 
-    event RepayLoan(
-        address indexed borrower,
-        uint256 indexed loanId,
-        uint256 indexed loanDataId,
-        bytes32 offerId,
-        uint16 netuid,
-        uint256 block,
-        uint256 collateralAmount,
-        uint256 repayAmount,
-        uint256 protocolFee
-    );
-
-    event RepayLoanBySell(
+    event RepayLoan (
         address indexed borrower,
         uint256 indexed loanId,
         uint256 indexed loanDataId,
@@ -238,7 +227,8 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
     event SetPauseStatus(string accepted, bool paused);
 
     event SetFeeRate(uint256 oldRate, uint256 newRate);
-    event SetLevel(uint16 netuid, uint16 level);
+
+    event SetMaxLevel(uint16 netuid, uint16 maxLevel);
 
     event ActiveSubnet(uint16 netuid, bool active);
 
@@ -386,6 +376,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         nonPausedBorrow nonReentrant returns (uint256)
     {
         _requireSubnetActive(_offer.netuid);
+        require(_taoAmount <= type(uint64).max, "tao amount overflow");
         require(_taoAmount >= MIN_LOAN_AMOUNT, "loan too small");
         require(userAlphaBalance[msg.sender][_offer.netuid] >= _alphaAmount, "low alpha");
 
@@ -397,9 +388,9 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
 
         // New loan creation and return TAO to borrower
         uint256 loanId = _newLoan(_offer, _taoAmount, _alphaAmount);
-        _unstakeTao(_taoAmount);
-        _decreaseSubnetAlphaBalance(0, _taoAmount);
-        _transferTao(msg.sender, _taoAmount);
+        uint256 removedStake = _removeStake(_taoAmount, 0);
+        _decreaseSubnetAlphaBalance(0, removedStake);
+        _transferTao(msg.sender, removedStake);
 
         emit CreateLoan(
             msg.sender,
@@ -410,7 +401,69 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             block.number,
             _alphaAmount,
             _taoAmount,
-            _offer.dailyInterestRate
+            _offer.dailyInterestRate,
+            0 // loan type 0 for normal borrow
+        );
+
+        return loanId;
+    }
+
+    /**
+     * @dev Create a new loan with level borrow
+     * @param _offer The offer struct with valid signature
+     * @param _borrowTaoAmount The amount of TAO to borrow, decimal RAO(1e9)
+     * @param _alphaAmount The amount of ALPHA to collateralize
+     * @param _limitAlphaPrice The buy alpha limit price
+     */
+    function borrowLevel(Offer memory _offer, uint256 _borrowTaoAmount, uint256 _alphaAmount, uint256 _limitAlphaPrice)
+        external onlyRegistered verifyOffer(_offer)
+        nonPausedBorrow nonReentrant returns (uint256)
+    {
+        _requireSubnetActive(_offer.netuid);
+        require(msg.sender != _offer.lender, "self lending");
+        require(_borrowTaoAmount <= type(uint64).max, "tao amount overflow");
+        require(_borrowTaoAmount >= MIN_LOAN_AMOUNT, "loan too small");
+        require(_alphaAmount > 0 && userAlphaBalance[msg.sender][_offer.netuid] >= _alphaAmount, "low alpha");
+        _lenderBalanceChecker(_offer, _borrowTaoAmount);
+
+        // level check
+        uint16 maxLevel = subnetMaxLevels[_offer.netuid];
+        require(
+            maxLevel > 0 && _borrowTaoAmount * PRICE_BASE * 100 <= _alphaAmount * _offer.maxAlphaPrice * maxLevel, 
+            "bad level"
+        );
+
+        // sim check
+        {
+            uint256 simAlphaAmount = alpha.simSwapTaoForAlpha(_offer.netuid, uint64(_borrowTaoAmount));
+            uint256 simAlphaPrice = _borrowTaoAmount * PRICE_BASE / simAlphaAmount;
+            require(_limitAlphaPrice > 0 && simAlphaPrice < _limitAlphaPrice, "limit price too low");
+            _alphaPriceChecker(_offer, _borrowTaoAmount, simAlphaAmount + _alphaAmount);
+        }
+
+        _decreaseUserAlphaBalance(msg.sender, _offer.netuid, _alphaAmount);
+        _updateLenderBorrowBalance(_offer, _borrowTaoAmount);
+
+        // unstake TAO and buy alpha for level borrow
+        uint256 removedStake = _removeStake(_borrowTaoAmount, 0);
+        _decreaseSubnetAlphaBalance(0, removedStake);
+        uint256 buyAlphaAmount = _addStake(removedStake, _offer.netuid);
+        _increaseSubnetAlphaBalance(_offer.netuid, buyAlphaAmount);
+
+        // New loan creation and return TAO to borrower
+        uint256 loanId = _newLoan(_offer, _borrowTaoAmount, _alphaAmount + buyAlphaAmount);
+
+        emit CreateLoan(
+            msg.sender,
+            loanId,
+            loanTerms[loanId].loanDataId,
+            _offer.offerId,
+            _offer.netuid,
+            block.number,
+            _alphaAmount + buyAlphaAmount,
+            _borrowTaoAmount,
+            _offer.dailyInterestRate,
+            1 // loan type 1 for level borrow
         );
 
         return loanId;
@@ -442,48 +495,51 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             block.number,
             loanTerm.collateralAmount,
             repayAmount - protocolFee,
-            protocolFee
+            protocolFee,
+            0 // sell amount 0 for normal repay
         );
     }
 
     /**
      * @dev Create a new loan of level
      * @param _offer The offer struct with valid signature
-     * @param _taoAmount The amount of TAO to collateralize
-     * @param _borrowAmount The borrow TAO amount
-     * @param _limitAalphaPrice The buy alpha limit price
+     * @param _collateralTaoAmount The amount of TAO to collateralize
+     * @param _borrowTaoAmount The borrow TAO amount
+     * @param _limitAlphaPrice The buy alpha limit price
      */
-    function level(Offer memory _offer, uint256 _taoAmount, uint256 _borrowAmount, uint256 _limitAalphaPrice)
+    function buyLevel(Offer memory _offer, uint256 _collateralTaoAmount, uint256 _borrowTaoAmount, uint256 _limitAlphaPrice)
         external onlyRegistered  verifyOffer(_offer)
         nonPausedBorrow nonReentrant returns (uint256)
     {
         _requireSubnetActive(_offer.netuid);
-        
-        require(_taoAmount > 0 && userAlphaBalance[msg.sender][0] >= _taoAmount, "low tao");
-        _lenderBalanceChecker(_offer, _borrowAmount);
+        require(msg.sender != _offer.lender, "self lending");
+        require((_collateralTaoAmount + _borrowTaoAmount) <= type(uint64).max, "tao amount overflow");
+        require(_borrowTaoAmount >= MIN_LOAN_AMOUNT, "loan too small");
+        require(_collateralTaoAmount > 0 && userAlphaBalance[msg.sender][0] >= _collateralTaoAmount, "low tao");
+        _lenderBalanceChecker(_offer, _borrowTaoAmount);
 
-        uint16 subnetLevel = subnetLevels[_offer.netuid];
-        require( subnetLevel > 0 && _borrowAmount <= _taoAmount * subnetLevel / 100, "bad level");
+        uint16 maxLevel = subnetMaxLevels[_offer.netuid];
+        require(maxLevel > 0 && _borrowTaoAmount * 100 <= _collateralTaoAmount * maxLevel, "bad level");
         
         // sim check
-        uint256 simAlphaAmount = alpha.simSwapTaoForAlpha(_offer.netuid, uint64(_taoAmount + _borrowAmount));
-        uint256 simAlphaPrice = (_taoAmount + _borrowAmount) * PRICE_BASE / simAlphaAmount;
-        require(_limitAalphaPrice > 0 && simAlphaPrice <= _limitAalphaPrice, "alpha price too low");
-        _alphaPriceChecker(_offer, _borrowAmount, simAlphaAmount);
+        {
+            uint256 simAlphaAmount = alpha.simSwapTaoForAlpha(_offer.netuid, uint64(_collateralTaoAmount + _borrowTaoAmount));
+            uint256 simAlphaPrice = (_collateralTaoAmount + _borrowTaoAmount) * PRICE_BASE / simAlphaAmount;
+            require(_limitAlphaPrice > 0 && simAlphaPrice < _limitAlphaPrice, "limit price too low");
+            _alphaPriceChecker(_offer, _borrowTaoAmount, simAlphaAmount);
+        }
+
+        _decreaseUserAlphaBalance(msg.sender, 0, _collateralTaoAmount);
+        _updateLenderBorrowBalance(_offer, _borrowTaoAmount);
 
         // unstake TAO and buy alpha
-        uint256 unstakeAmount = _taoAmount + _borrowAmount;
-        _unstakeTao(unstakeAmount);
-        _decreaseSubnetAlphaBalance(0, unstakeAmount);
-        uint256 buyAlphaAmount = _addStakeLimit(unstakeAmount, _limitAalphaPrice, _offer.netuid);
+        uint256 removedStake = _removeStake(_collateralTaoAmount + _borrowTaoAmount, 0);
+        _decreaseSubnetAlphaBalance(0, removedStake);
+        uint256 buyAlphaAmount = _addStake(removedStake, _offer.netuid);
         _increaseSubnetAlphaBalance(_offer.netuid, buyAlphaAmount);
 
-        // _alphaPriceChecker(_offer, _borrowAmount, buyAlphaAmount);
-        _decreaseUserAlphaBalance(msg.sender, _offer.netuid, _taoAmount);
-        _updateLenderBorrowBalance(_offer, _borrowAmount);
-
         // New loan creation
-        uint256 loanId = _newLoan(_offer, _borrowAmount, buyAlphaAmount);
+        uint256 loanId = _newLoan(_offer, _borrowTaoAmount, buyAlphaAmount);
 
         emit CreateLoan(
             msg.sender,
@@ -493,8 +549,9 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             _offer.netuid,
             block.number,
             buyAlphaAmount,
-            _borrowAmount,
-            _offer.dailyInterestRate
+            _borrowTaoAmount,
+            _offer.dailyInterestRate,
+            2 // loan type 2 for buy level
         );
 
         return loanId;
@@ -504,37 +561,43 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
      * @dev Repay a loan by sell collateral alpha
      * @param _loanId The ID of the loan to repay
      * @param _alphaAmount The sell amount of collateral
+     * @param _limitAlphaPrice The buy alpha limit price
      */
-    function repay(uint256 _loanId, uint256 _alphaAmount, uint256 _limitAalphaPrice) external onlyRegistered nonReentrant {
+    function repayBySell(uint256 _loanId, uint256 _alphaAmount, uint256 _limitAlphaPrice)
+        external onlyRegistered nonReentrant
+    {
         (LoanTerm storage loanTerm, LoanData storage loanData, Offer memory offer) = _getLoanData(_loanId);
         uint16 netuid = loanTerm.netuid;
 
         _requireLoanActive(loanData);
         _requireSubnetActive(netuid);
 
+        require(_alphaAmount <= type(uint64).max, "alpha amount overflow"); 
         require(loanTerm.borrower == msg.sender, "not borrower");
         require(loanTerm.collateralAmount >= _alphaAmount, "collateral not enough");
 
         (uint256 repayAmount, uint256 protocolFee) = _settleLoanRepayment(loanData);
 
         // sim check
-        uint256 simTaoAmount = alpha.simSwapAlphaForTao(offer.netuid, uint64(_alphaAmount));
-        require(userAlphaBalance[msg.sender][0] + simTaoAmount >= repayAmount, "low tao");
-        uint256 simAlphaPrice = simTaoAmount * PRICE_BASE / _alphaAmount;
-        require(_limitAalphaPrice > 0 && _limitAalphaPrice <= simAlphaPrice, "alpha price too high");
+        {
+            uint256 simTaoAmount = alpha.simSwapAlphaForTao(offer.netuid, uint64(_alphaAmount));
+            require(userAlphaBalance[msg.sender][0] + simTaoAmount >= repayAmount, "low tao");
+            uint256 simAlphaPrice = simTaoAmount * PRICE_BASE / _alphaAmount;
+            require(_limitAlphaPrice > 0 && _limitAlphaPrice < simAlphaPrice, "limit price too high");
+        }
 
         // sell alpha and stake TAO
-        uint256 sellTaoAmount = _removeStakeLimit(_alphaAmount, _limitAalphaPrice, offer.netuid);
+        uint256 sellTaoAmount = _removeStake(_alphaAmount, offer.netuid);
         _decreaseSubnetAlphaBalance(offer.netuid, _alphaAmount);
-        sellTaoAmount = _stakeTao(sellTaoAmount);
-        require(userAlphaBalance[msg.sender][0] + sellTaoAmount >= repayAmount, "low tao");
-        _increaseUserAlphaBalance(msg.sender, 0, sellTaoAmount);
-        _increaseSubnetAlphaBalance(0, sellTaoAmount);
+        uint256 stakedAmount = _addStake(sellTaoAmount, 0);
+        require(userAlphaBalance[msg.sender][0] + stakedAmount >= repayAmount, "low tao");
+        _increaseUserAlphaBalance(msg.sender, 0, stakedAmount);
+        _increaseSubnetAlphaBalance(0, stakedAmount);
 
         _decreaseUserAlphaBalance(msg.sender, 0, repayAmount);
         _increaseUserAlphaBalance(loanTerm.borrower, netuid, loanTerm.collateralAmount - _alphaAmount);
 
-        emit RepayLoanBySell(
+        emit RepayLoan(
             msg.sender,
             _loanId,
             loanTerm.loanDataId,
@@ -646,7 +709,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         uint256 additionalBorrowAmount = 0;
         if (_newLoanAmount > repayAmount) {
             additionalBorrowAmount = _newLoanAmount - repayAmount;
-            _unstakeTao(additionalBorrowAmount);
+            additionalBorrowAmount = _removeStake(additionalBorrowAmount, 0);
             _decreaseSubnetAlphaBalance(0, additionalBorrowAmount);
         }
 
@@ -789,7 +852,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         uint256 rao = msg.value / 1e9; // Convert EVM TAO (18 decimals) to RAO (9 decimals)
         require(rao > 0, "zero amount");
 
-        uint256 stakedAmount = _stakeTao(rao);
+        uint256 stakedAmount = _addStake(rao, 0);
         uint256 creditAmount = Math.min(stakedAmount, rao);
         _increaseUserAlphaBalance(msg.sender, 0, creditAmount);
         _increaseSubnetAlphaBalance(0, creditAmount);
@@ -807,8 +870,8 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         _decreaseUserAlphaBalance(msg.sender, 0, _amount);
         _decreaseSubnetAlphaBalance(0, _amount);
 
-        _unstakeTao(_amount);
-        _transferTao(msg.sender, _amount);
+        uint256 removedStake = _removeStake(_amount, 0);
+        _transferTao(msg.sender, removedStake);
 
         emit WithdrawTao(msg.sender,_amount);
     }
@@ -938,10 +1001,11 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
      * @param _netuid The subnet ID
      * @param _level The collateralization level (e.g. 150 means 150%)
      */
-    function setLevel(uint16 _netuid, uint16 _level) public onlyManager nonReentrant {
+    function setMaxLevel(uint16 _netuid, uint16 _level) public onlyManager nonReentrant {
         require(_netuid > 0, "bad netuid");
-        subnetLevels[_netuid] = _level;
-        emit SetLevel(_netuid, _level);
+        require(_level <= 500, "bad level");
+        subnetMaxLevels[_netuid] = _level;
+        emit SetMaxLevel(_netuid, _level);
     }
 
     /**
@@ -971,8 +1035,8 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         _updateLoanData(loanData, STATE.RESOLVED);
 
         // deregistered TAO returned to staking pool, so stake it
-        _stakeTao(_borrowerAmount + _lenderAmount);
-        _increaseSubnetAlphaBalance(0, _borrowerAmount + _lenderAmount);
+        uint256 addedStake = _addStake(_borrowerAmount + _lenderAmount, 0);
+        _increaseSubnetAlphaBalance(0, addedStake);
 
         emit ResolveLoan(
             msg.sender,
@@ -1013,8 +1077,8 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         _increaseUserAlphaBalance(_user, 0, _taoAmount);
 
         // deregistered TAO returned to staking pool, so stake it
-        _stakeTao(_taoAmount);
-        _increaseSubnetAlphaBalance(0, _taoAmount);
+        uint256 addedStake = _addStake(_taoAmount, 0);
+        _increaseSubnetAlphaBalance(0, addedStake);
 
         emit ResolveAlpha(msg.sender, _user, _netuid, alphaAmount, _taoAmount);
     }
@@ -1229,77 +1293,38 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         require(afterStake >= beforeStake - _amount, "insufficient deposit");
     }
 
-    function _stakeTao(uint256 _amountRao) internal returns (uint256) {
-        uint256 beforeStake = _getContractStake(0);
+    function _addStake(uint256 _amountRao, uint16 _netuid) internal returns (uint256) {
+        uint256 beforeStake = _getContractStake(_netuid);
 
         bytes memory data = abi.encodeWithSelector(
             IStaking.addStake.selector,
             DELEGATE_HOTKEY,
             _amountRao,
-            0
-        );
-        (bool success, ) = address(staking).call(data);
-        require(success, "stake failed");
-
-        uint256 afterStake = _getContractStake(0);
-        require(afterStake > beforeStake, "insufficient deposit");
-
-        return afterStake - beforeStake;
-    }
-
-    function _unstakeTao(uint256 _amountRao) internal {
-        uint256 beforeRemove = _getContractStake(0);
-        require(beforeRemove >= _amountRao, "low stake");
-
-        bytes memory data = abi.encodeWithSelector(
-            IStaking.removeStake.selector,
-            DELEGATE_HOTKEY,
-            _amountRao,
-            0
-        );
-        (bool success, ) = address(staking).call(data);
-        require(success, "unstake failed");
-
-        uint256 afterRemove = _getContractStake(0);
-        require(afterRemove >= beforeRemove - _amountRao, "insufficient deposit");
-    }
-
-    function _addStakeLimit(uint256 _amountRao, uint256 _limitPrice, uint16 _netuid) internal returns (uint256) {
-        uint256 beforeStake = _getContractStake(_netuid);
-
-        bytes memory data = abi.encodeWithSelector(
-            IStaking.addStakeLimit.selector,
-            DELEGATE_HOTKEY,
-            _amountRao,
-            _limitPrice,
-            false,
             _netuid
         );
         (bool success, ) = address(staking).call(data);
         require(success, "add stake failed");
 
         uint256 afterStake = _getContractStake(_netuid);
-        require(afterStake >= beforeStake, "insufficient buy alpha");
+        require(afterStake > beforeStake, "insufficient buy alpha");
 
         return afterStake - beforeStake;
     }
 
-    function _removeStakeLimit(uint256 _amountRao, uint256 _limitPrice, uint16 _netuid) internal returns (uint256) {
+    function _removeStake(uint256 _amountRao, uint16 _netuid) internal returns (uint256) {
         uint256 beforeRemove = address(this).balance / 1e9;
 
         bytes memory data = abi.encodeWithSelector(
-            IStaking.removeStakeLimit.selector,
+            IStaking.removeStake.selector,
             DELEGATE_HOTKEY,
             _amountRao,
-            _limitPrice,
-            false,
             _netuid
         );
         (bool success, ) = address(staking).call(data);
         require(success, "remove stake failed");
 
-        uint256 afterRemove= address(this).balance / 1e9;
-        require(afterRemove >= beforeRemove, "insufficient sell tao");
+        uint256 afterRemove = address(this).balance / 1e9;
+        require(afterRemove > beforeRemove, "insufficient sell tao");
 
         return afterRemove - beforeRemove;
     }
@@ -1319,9 +1344,11 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
     /**
      * @dev Storage gap for future upgrades
      * Reserve 49 slots to prevent storage collisions in future contract versions
-     * (50 - 1 for subnetLevels mapping added in v2)
+     * (50 - 1 for subnetMaxLevels mapping added in v2)
      * When adding new state variables in upgrades, reduce this gap accordingly
      */
     uint256[49] private __gap;
 }
+
+
 

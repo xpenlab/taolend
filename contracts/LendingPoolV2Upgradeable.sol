@@ -129,7 +129,8 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         bytes32 offerId,
         uint16 netuid,
         uint256 block,
-        uint256 collateralAmount,
+        uint256 userCollateralAmount,
+        uint256 loanCollateralAmount,
         uint256 loanAmount,
         uint256 dailyInterestRate,
         uint8 loanType // 0 for normal borrow, 1 for level borrow, 2 for buy level
@@ -400,6 +401,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             _offer.netuid,
             block.number,
             _alphaAmount,
+            _alphaAmount,
             _taoAmount,
             _offer.dailyInterestRate,
             0 // loan type 0 for normal borrow
@@ -438,7 +440,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             uint256 simAlphaAmount = alpha.simSwapTaoForAlpha(_offer.netuid, uint64(_borrowTaoAmount));
             uint256 simAlphaPrice = _borrowTaoAmount * PRICE_BASE / simAlphaAmount;
             require(_limitAlphaPrice > 0 && simAlphaPrice < _limitAlphaPrice, "limit price too low");
-            _alphaPriceChecker(_offer, _borrowTaoAmount, simAlphaAmount + _alphaAmount);
+            _simAlphaPriceChecker(_offer, _borrowTaoAmount, simAlphaAmount + _alphaAmount, simAlphaPrice);
         }
 
         _decreaseUserAlphaBalance(msg.sender, _offer.netuid, _alphaAmount);
@@ -460,6 +462,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             _offer.offerId,
             _offer.netuid,
             block.number,
+            _alphaAmount,
             _alphaAmount + buyAlphaAmount,
             _borrowTaoAmount,
             _offer.dailyInterestRate,
@@ -526,7 +529,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             uint256 simAlphaAmount = alpha.simSwapTaoForAlpha(_offer.netuid, uint64(_collateralTaoAmount + _borrowTaoAmount));
             uint256 simAlphaPrice = (_collateralTaoAmount + _borrowTaoAmount) * PRICE_BASE / simAlphaAmount;
             require(_limitAlphaPrice > 0 && simAlphaPrice < _limitAlphaPrice, "limit price too low");
-            _alphaPriceChecker(_offer, _borrowTaoAmount, simAlphaAmount);
+            _simAlphaPriceChecker(_offer, _borrowTaoAmount, simAlphaAmount, simAlphaPrice);
         }
 
         _decreaseUserAlphaBalance(msg.sender, 0, _collateralTaoAmount);
@@ -548,6 +551,7 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
             _offer.offerId,
             _offer.netuid,
             block.number,
+            _collateralTaoAmount,
             buyAlphaAmount,
             _borrowTaoAmount,
             _offer.dailyInterestRate,
@@ -1145,6 +1149,11 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
         require(_alphaAmount * _offer.maxAlphaPrice >= _taoAmount * PRICE_BASE, "low collateral");
     }
 
+    function _simAlphaPriceChecker(Offer memory _offer, uint256 _taoAmount, uint256 _alphaAmount, uint256 _alphaPrice) internal pure {
+        require(_offer.maxAlphaPrice * RATE_BASE < _alphaPrice * SAFE_ALPHA_PRICE, "bad price");
+        require(_alphaAmount * _offer.maxAlphaPrice >= _taoAmount * PRICE_BASE, "low collateral");
+    }
+
     function _calculateRepayAmount(LoanData storage _loanData) internal view returns (uint256, uint256) {
         Offer memory offer = loanOffers[_loanData.offerId];
         uint256 elapsedBlocks = block.number - _loanData.startBlock;
@@ -1349,6 +1358,4 @@ contract LendingPoolV2Upgradeable is Initializable, OwnableUpgradeable, Reentran
      */
     uint256[49] private __gap;
 }
-
-
 
